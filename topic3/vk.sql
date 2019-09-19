@@ -706,14 +706,14 @@ INSERT INTO messages (from_user_id, to_user_id, body, important, delivered) VALU
 
 select * from messages;
 
-INSERT INTO friendship_statuses () VALUES
+INSERT INTO friendship_statuses (name) VALUES
 ('brother'),
 ('friend'),
 ('enemy'); 
 
 select * from friendship_statuses;
 
-INSERT INTO `friendship` VALUES ('1','1','1','2019-08-06 09:09:11','1976-01-03 16:48:28'),
+INSERT INTO friendship VALUES ('1','1','1','2019-08-06 09:09:11','1976-01-03 16:48:28'),
 ('2','2','2','1975-08-06 13:01:31','1975-04-13 18:02:29'),
 ('3','3','3','1994-08-14 03:45:47','2016-08-07 01:49:35'),
 ('4','4','1','1997-12-07 01:32:09','1995-11-12 20:25:14'),
@@ -813,6 +813,8 @@ INSERT INTO `friendship` VALUES ('1','1','1','2019-08-06 09:09:11','1976-01-03 1
 ('98','98','2','2000-06-12 02:31:33','1991-12-31 00:40:12'),
 ('99','99','3','1977-04-24 16:06:38','1980-01-10 08:06:13'),
 ('100','100','1','1994-06-30 10:36:30','1994-08-20 19:34:03'); 
+
+select * from friendship;
 
 INSERT INTO communities (name) VALUES
 ('Accusantium aliquam esse tenetur quam. Officiis ipsum sed enim quia sint rerum. Voluptas dolorum et eum aut architecto. Enim aut quis accusamus eum. V'),
@@ -916,7 +918,10 @@ INSERT INTO communities (name) VALUES
 ('Voluptatem id est laborum eos pariatur consectetur. Et ducimus fuga at nostrum possimus assumenda rerum. Eos fuga consectetur soluta ducimus est tenet'),
 ('Voluptatem maxime eum totam est dolor. Vel libero sed et perferendis aut itaque. Harum numquam enim voluptatibus nesciunt enim quae dolorum similique.');
 
-INSERT INTO `communities_users` VALUES ('1','1'),
+select * from communities;
+
+INSERT INTO communities_users VALUES
+('1','1'),
 ('2','2'),
 ('3','3'),
 ('4','4'),
@@ -1017,11 +1022,17 @@ INSERT INTO `communities_users` VALUES ('1','1'),
 ('99','99'),
 ('100','100'); 
 
-INSERT INTO `object_type` VALUES ('1','users','1985-08-09 20:20:24','1994-11-15 06:04:54'),
-('2','media','2000-06-08 14:04:48','2002-01-16 12:41:16'),
-('3','messages','2014-07-04 05:17:48','1983-07-13 20:03:06'); 
+select * from communities_users;
 
-INSERT INTO `likes` VALUES ('1','1','1','2'),
+INSERT INTO object_type (name) VALUES
+('users'),
+('media'),
+('messages'); 
+
+select * from object_type;
+
+INSERT INTO likes VALUES
+('1','1','1','2'),
 ('2','2','2','-7'),
 ('3','3','3','10'),
 ('4','1','4','-2'),
@@ -1121,16 +1132,5 @@ INSERT INTO `likes` VALUES ('1','1','1','2'),
 ('98','2','98','-2'),
 ('99','3','99','-10'),
 ('100','1','100','7'); 
-select * from users;
 
-select * from communities;
-select * from communities_users;
-select * from friendship;
-select * from friendship_statuses;
 select * from likes;
-select * from media;
-select * from media_types;
-select * from messages;
-select * from object_type;
-select * from profiles;
-select * from user_roles;
