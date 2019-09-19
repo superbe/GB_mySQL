@@ -8,8 +8,8 @@ drop table if exists roles;
 create table roles (
     id int unsigned not null auto_increment primary key,
     name varchar(256) not null,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp
 );
 
 -- Таблица зарегистрированных пользователей.
@@ -23,8 +23,8 @@ create table users (
     phone_confirmed bit not null,
     password_hash varchar(1024),
     blocked bit not null,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp
 );
 
 -- Таблица ролей пользователя.
@@ -42,8 +42,8 @@ drop table if exists media_types;
 create table media_types (
     id int unsigned not null auto_increment primary key,
     name varchar(255) not null unique,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp
 );
 
 -- Таблица медиафайлов.
@@ -55,8 +55,8 @@ create table media (
     filename varchar(255) not null,
     size int not null,
     metadata JSON,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
     foreign key (user_id) references users (id),
     foreign key (media_type_id) references media_types (id)
 );
@@ -71,8 +71,8 @@ create table profiles (
     birthday date,
     hometown varchar(100),
     photo_id int unsigned not null,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
     foreign key (user_id) references users (id),
     foreign key (photo_id) references media (id)
 );
@@ -86,8 +86,8 @@ create table messages (
     body text not null,
     important boolean,
     delivered boolean,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
     foreign key (from_user_id) references users (id),
     foreign key (to_user_id) references users (id)
 );
@@ -97,8 +97,8 @@ drop table if exists friendship_statuses;
 create table friendship_statuses (
     id int unsigned not null auto_increment primary key,
     name varchar(150) not null unique,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp
 );
 
 -- Таблица дружбы.
@@ -120,8 +120,8 @@ drop table if exists communities;
 create table communities (
     id int unsigned not null auto_increment primary key,
     name varchar(150) not null unique,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp
 );
 
 -- Таблица связей пользователей и групп.
@@ -139,8 +139,8 @@ drop table if exists object_type;
 create table object_type (
     id int unsigned not null auto_increment primary key,
     name varchar(256) not null,
-    created_at timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp
 );
 
 -- Таблица лайков, не лаек.
@@ -159,13 +159,15 @@ create table likes (
 -- Host: mysql.hostinger.ro
 -- DB name: u574849695_22
 
-INSERT INTO `roles` VALUES ('1','admin','1994-02-18 16:03:05','1997-12-03 07:00:44'),
-('2','user','1970-11-05 06:48:03','2013-09-26 05:39:09'),
-('3','author','1981-07-07 06:42:57','2006-06-11 08:30:03'),
-('4','moderator','2011-06-27 15:05:48','2006-09-19 19:10:29'),
-('5','owner','1986-01-22 02:46:42','1996-08-08 00:58:36'),
-('6','redactor','1987-06-23 20:51:20','1997-10-03 20:31:45'),
-('7','expert','2017-07-12 11:37:41','1998-09-09 09:13:53'); 
+INSERT INTO `roles` (name) VALUES ('admin'),
+('user'),
+('author'),
+('moderator'),
+('owner'),
+('redactor'),
+('expert'); 
+
+select * from roles;
 
 INSERT INTO `users` VALUES ('1','gaylord.darrion','geovanny.gaylord@example.com','1','+30(5)3202100932','0','f9e20680e58746a1f959bcc95d501ac6347c308e','1','2019-08-11 22:18:16','1987-09-25 18:10:40'),
 ('2','carolyn94','jacobs.bill@example.com','0','(493)284-7081x5855','0','15e1fc6310bf18a9ce96f4ce1cb32e42feca1111','0','1990-08-08 03:54:34','2000-12-03 04:05:31'),
@@ -267,6 +269,8 @@ INSERT INTO `users` VALUES ('1','gaylord.darrion','geovanny.gaylord@example.com'
 ('98','lnolan','alan60@example.org','0','624-192-5245','0','e8261647ca25ff49c6701ef0b0dfcd803b1ec978','0','1992-03-19 04:18:17','1975-06-03 00:24:06'),
 ('99','graham.javonte','bgrant@example.org','1','1-643-716-3224','1','f01416903b629f5ccaba86acd2633651eafa920a','0','1993-11-27 11:37:24','1975-04-13 15:52:34'),
 ('100','jordon.swift','adell.ferry@example.com','1','910-428-1879x608','1','88a9321cc7d7d3b1e615a10a697091ac0193efb2','1','2019-07-06 02:51:45','1982-10-12 23:01:31');
+
+select * from users;
 
 INSERT INTO `user_roles` VALUES ('1','1'),
 ('2','2'),
@@ -1096,3 +1100,16 @@ INSERT INTO `likes` VALUES ('1','1','1','2'),
 ('98','2','98','-2'),
 ('99','3','99','-10'),
 ('100','1','100','7'); 
+select * from users;
+
+select * from communities;
+select * from communities_users;
+select * from friendship;
+select * from friendship_statuses;
+select * from likes;
+select * from media;
+select * from media_types;
+select * from messages;
+select * from object_type;
+select * from profiles;
+select * from user_roles;
