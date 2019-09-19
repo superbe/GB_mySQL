@@ -1,9 +1,9 @@
--- Создаем базу данных VK.
+-- База данных VK.
 drop database if exists vk;
 create database vk;
 use vk;
 
--- Создаем справочник ролей пользователей.
+-- Справочник ролей пользователей.
 drop table if exists roles;
 create table roles (
     id int unsigned not null auto_increment primary key,
@@ -12,7 +12,7 @@ create table roles (
     updated_at timestamp default current_timestamp
 );
 
--- Создаем таблицу зарегистрированных пользователей.
+-- Таблица зарегистрированных пользователей.
 drop table if exists users;
 create table users (
     id int unsigned not null auto_increment primary key,
@@ -27,7 +27,7 @@ create table users (
     updated_at timestamp default current_timestamp
 );
 
--- Создаем таблицу ролей пользователя.
+-- Таблица ролей пользователя.
 drop table if exists user_roles;
 create table user_roles (
     user_id int unsigned not null,
@@ -37,7 +37,7 @@ create table user_roles (
     foreign key (role_id) references roles (id)
 );
 
--- Таблица типов медиафайлов
+-- Таблица типов медиафайлов.
 drop table if exists media_types;
 create table media_types (
     id int unsigned not null auto_increment primary key,
@@ -46,7 +46,7 @@ create table media_types (
     updated_at timestamp default current_timestamp
 );
 
--- Таблица медиафайлов
+-- Таблица медиафайлов.
 drop table if exists media;
 create table media (
     id int unsigned not null auto_increment primary key,
@@ -77,7 +77,7 @@ create table profiles (
     foreign key (photo_id) references media (id)
 );
 
--- Таблица сообщений
+-- Таблица сообщений.
 drop table if exists messages;
 create table messages (
     id int unsigned not null auto_increment primary key, 
@@ -92,7 +92,7 @@ create table messages (
     foreign key (to_user_id) references users (id)
 );
 
--- Таблица статусов дружеских отношений
+-- Таблица состояний дружбы.
 drop table if exists friendship_statuses;
 create table friendship_statuses (
     id int unsigned not null auto_increment primary key,
@@ -101,7 +101,7 @@ create table friendship_statuses (
     updated_at timestamp default current_timestamp
 );
 
--- Таблица дружбы
+-- Таблица дружбы.
 drop table if exists friendship;
 create table friendship (
     user_id int unsigned not null,
@@ -115,7 +115,7 @@ create table friendship (
     foreign key (status_id) references friendship_statuses (id)
 );
 
--- Таблица групп
+-- Таблица групп.
 drop table if exists communities;
 create table communities (
     id int unsigned not null auto_increment primary key,
@@ -124,7 +124,7 @@ create table communities (
     updated_at timestamp default current_timestamp
 );
 
--- Таблица связи пользователей и групп
+-- Таблица связей пользователей и групп.
 drop table if exists communities_users;
 create table communities_users (
     community_id int unsigned not null,
@@ -134,7 +134,7 @@ create table communities_users (
     foreign key (community_id) references communities (id)
 );
 
--- Типы объектов рейтинга.
+-- Таблица типов объектов рейтинга.
 drop table if exists object_type;
 create table object_type (
     id int unsigned not null auto_increment primary key,
@@ -143,7 +143,7 @@ create table object_type (
     updated_at timestamp default current_timestamp
 );
 
--- Лайки.
+-- Таблица лайков, не лаек.
 drop table if exists likes;
 create table likes (
     object_id int unsigned not null,
@@ -158,27 +158,6 @@ create table likes (
 -- Generation time: Wed, 18 Sep 2019 23:50:57 +0000
 -- Host: mysql.hostinger.ro
 -- DB name: u574849695_22
-/*!40030 SET NAMES UTF8 */;
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-DROP TABLE IF EXISTS `communities`;
-CREATE TABLE `communities` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 INSERT INTO `communities` VALUES ('1','Ad non sit quasi ipsum nihil voluptatem quidem. Ab beatae exercitationem exercitationem hic officia sunt. Nulla consequuntur dolores ut facere.','1974-11-22 20:26:30','1985-10-06 10:24:18'),
 ('2','Dolorem et facilis dignissimos ullam quis. Corporis id qui qui. Rem architecto tenetur saepe pariatur qui iste. Qui maiores quia ut asperiores et arch','2011-07-10 19:51:07','1998-07-29 14:29:47'),
 ('3','Excepturi minima maxime qui sit dolor. Amet laborum rerum expedita in cumque autem.','2001-02-14 22:23:19','1975-02-02 12:16:39'),
@@ -279,17 +258,6 @@ INSERT INTO `communities` VALUES ('1','Ad non sit quasi ipsum nihil voluptatem q
 ('98','Qui repudiandae ut modi similique excepturi repudiandae nostrum atque. Id dignissimos nisi ipsum hic dolores qui. Sint qui facere qui et est ut blandi','1997-09-09 10:42:19','1989-08-01 01:39:59'),
 ('99','Et culpa aut iusto. Totam in unde non enim esse ut dolore. Molestiae quae reiciendis ullam est incidunt quis optio. Odio at culpa molestias dolor anim','1970-01-19 04:14:31','1986-11-22 12:51:53'),
 ('100','Cum numquam dolores quod eaque. Assumenda in laudantium dolores vel nam explicabo. Ea dolores consequatur vitae. Error odio nobis dolore quia veniam u','2014-05-11 15:36:18','1993-01-25 11:21:38'); 
-
-
-DROP TABLE IF EXISTS `communities_users`;
-CREATE TABLE `communities_users` (
-  `community_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`community_id`,`user_id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `communities_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `communities_users_ibfk_2` FOREIGN KEY (`community_id`) REFERENCES `communities` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `communities_users` VALUES ('1','1'),
 ('2','2'),
@@ -392,22 +360,6 @@ INSERT INTO `communities_users` VALUES ('1','1'),
 ('99','99'),
 ('100','100'); 
 
-
-DROP TABLE IF EXISTS `friendship`;
-CREATE TABLE `friendship` (
-  `user_id` int(10) unsigned NOT NULL,
-  `friend_id` int(10) unsigned NOT NULL,
-  `status_id` int(10) unsigned NOT NULL,
-  `requested_at` datetime DEFAULT current_timestamp(),
-  `confirmed_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`user_id`,`friend_id`),
-  KEY `friend_id` (`friend_id`),
-  KEY `status_id` (`status_id`),
-  CONSTRAINT `friendship_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `friendship_ibfk_2` FOREIGN KEY (`friend_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `friendship_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `friendship_statuses` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 INSERT INTO `friendship` VALUES ('1','1','1','2019-08-06 09:09:11','1976-01-03 16:48:28'),
 ('2','2','2','1975-08-06 13:01:31','1975-04-13 18:02:29'),
 ('3','3','3','1994-08-14 03:45:47','2016-08-07 01:49:35'),
@@ -509,34 +461,9 @@ INSERT INTO `friendship` VALUES ('1','1','1','2019-08-06 09:09:11','1976-01-03 1
 ('99','99','3','1977-04-24 16:06:38','1980-01-10 08:06:13'),
 ('100','100','1','1994-06-30 10:36:30','1994-08-20 19:34:03'); 
 
-
-DROP TABLE IF EXISTS `friendship_statuses`;
-CREATE TABLE `friendship_statuses` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `friendship_statuses` VALUES ('1','explicabo','2006-05-23 08:23:54','2001-05-21 04:26:46'),
-('2','rerum','1990-03-11 21:06:21','2016-07-14 20:50:41'),
-('3','quia','1978-10-14 18:39:36','2011-07-24 14:39:58'); 
-
-
-DROP TABLE IF EXISTS `likes`;
-CREATE TABLE `likes` (
-  `object_id` int(10) unsigned NOT NULL,
-  `object_type_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `value` int(11) DEFAULT NULL,
-  PRIMARY KEY (`object_id`,`object_type_id`,`user_id`),
-  KEY `user_id` (`user_id`),
-  KEY `object_type_id` (`object_type_id`),
-  CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`object_type_id`) REFERENCES `object_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+INSERT INTO `friendship_statuses` VALUES ('1','brother','2006-05-23 08:23:54','2001-05-21 04:26:46'),
+('2','friend','1990-03-11 21:06:21','2016-07-14 20:50:41'),
+('3','enemy','1978-10-14 18:39:36','2011-07-24 14:39:58'); 
 
 INSERT INTO `likes` VALUES ('1','1','1','2'),
 ('2','2','2','-7'),
@@ -639,24 +566,6 @@ INSERT INTO `likes` VALUES ('1','1','1','2'),
 ('99','3','99','-10'),
 ('100','1','100','7'); 
 
-
-DROP TABLE IF EXISTS `media`;
-CREATE TABLE `media` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `media_type_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `filename` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `size` int(11) NOT NULL,
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `media_type_id` (`media_type_id`),
-  CONSTRAINT `media_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `media_ibfk_2` FOREIGN KEY (`media_type_id`) REFERENCES `media_types` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 INSERT INTO `media` VALUES ('1','1','1','/3a24967a55cad67a31d4e2ef355094cc.jpg','353386787','Fuga commodi vitae qui cumque. Alias consequatur alias praesentium. Ullam rerum porro saepe blanditiis et iusto. Molestiae molestiae alias architecto voluptatem.','1971-09-12 22:11:50','1978-06-08 16:06:42'),
 ('2','2','2','/c7f0fea4346cf24675407cfb18cdc1c1.jpg','22','Eos cumque provident perferendis doloribus est ea quas. Accusamus pariatur aliquid voluptatem natus doloribus expedita. Rerum quidem beatae nisi alias. Consectetur aut sed nemo adipisci.','2009-06-26 11:32:25','1991-07-28 12:42:06'),
 ('3','3','3','/1604ed3872cf28fa82774b5bcb66ef87.jpg','20','Corporis quos earum voluptatem adipisci quas facilis maxime. Odit ipsa dolorem et et. Est enim quo reiciendis repudiandae veritatis harum et.','2014-11-18 01:53:48','2017-08-18 17:11:08'),
@@ -758,17 +667,6 @@ INSERT INTO `media` VALUES ('1','1','1','/3a24967a55cad67a31d4e2ef355094cc.jpg',
 ('99','3','99','/bce7535acb580d058a84b0df58ce88b1.jpg','67324','Earum quia et autem a. Aut eaque minus rem eius fuga. Voluptas temporibus omnis iure. Tenetur quia voluptatum odit dicta vitae suscipit.','1988-08-02 12:33:02','1996-11-22 02:56:34'),
 ('100','4','100','/52a531e2f3e64b07c57173913baf3070.jpg','358474','Mollitia est quia non nihil tenetur dolores amet debitis. Dolor voluptates quia quae. Earum placeat praesentium ullam officia itaque qui illum.','1996-09-17 15:29:56','2017-05-14 20:52:11'); 
 
-
-DROP TABLE IF EXISTS `media_types`;
-CREATE TABLE `media_types` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 INSERT INTO `media_types` VALUES ('1','zip','1992-03-19 03:28:35','2018-03-19 19:43:47'),
 ('2','xbm','2003-06-09 14:06:19','1976-03-01 23:48:05'),
 ('3','rip','1995-12-05 17:03:43','2009-03-19 03:46:58'),
@@ -781,24 +679,6 @@ INSERT INTO `media_types` VALUES ('1','zip','1992-03-19 03:28:35','2018-03-19 19
 ('10','uvvu','1979-01-31 07:22:10','2014-09-12 07:06:32'),
 ('11','cpio','1990-01-09 13:54:06','1984-04-07 05:31:13'),
 ('12','kwt','1982-02-03 10:02:44','1999-12-14 11:05:53'); 
-
-
-DROP TABLE IF EXISTS `messages`;
-CREATE TABLE `messages` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `from_user_id` int(10) unsigned NOT NULL,
-  `to_user_id` int(10) unsigned NOT NULL,
-  `body` text COLLATE utf8_unicode_ci NOT NULL,
-  `important` tinyint(1) DEFAULT NULL,
-  `delivered` tinyint(1) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `from_user_id` (`from_user_id`),
-  KEY `to_user_id` (`to_user_id`),
-  CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`from_user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`to_user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `messages` VALUES ('1','1','1','Ratione ab blanditiis enim similique voluptatum corrupti earum. Ex dolores nesciunt omnis totam. Expedita quisquam consequatur dolore fuga a eos. Non sit amet in fuga inventore.',NULL,NULL,'2016-06-18 03:08:26','1987-07-12 21:53:49'),
 ('2','2','2','Ullam omnis expedita impedit ut eligendi. Iste beatae illum sed enim repudiandae animi est. Qui maiores assumenda earum.',NULL,NULL,'2003-07-16 04:57:55','1991-06-07 11:42:37'),
@@ -901,37 +781,9 @@ INSERT INTO `messages` VALUES ('1','1','1','Ratione ab blanditiis enim similique
 ('99','99','99','Laboriosam ut sed veniam qui. Illo autem possimus repellat praesentium optio quis qui. Optio nulla molestiae molestiae neque sed. Omnis dolor aut dolore sunt ut qui suscipit.',NULL,NULL,'2000-08-20 15:03:24','2003-08-26 01:38:07'),
 ('100','100','100','Recusandae non ut officiis dolores dolorem placeat sunt amet. Eligendi facere architecto modi consequatur quisquam nemo. Aut quo id quis qui.',NULL,NULL,'2007-02-21 09:01:28','1991-12-30 17:58:00'); 
 
-
-DROP TABLE IF EXISTS `object_type`;
-CREATE TABLE `object_type` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `object_type` VALUES ('1','voluptas','1985-08-09 20:20:24','1994-11-15 06:04:54'),
-('2','non','2000-06-08 14:04:48','2002-01-16 12:41:16'),
-('3','qui','2014-07-04 05:17:48','1983-07-13 20:03:06'); 
-
-
-DROP TABLE IF EXISTS `profiles`;
-CREATE TABLE `profiles` (
-  `user_id` int(10) unsigned NOT NULL,
-  `first_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `last_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `sex` char(1) COLLATE utf8_unicode_ci NOT NULL,
-  `birthday` date DEFAULT NULL,
-  `hometown` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `photo_id` int(10) unsigned NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`user_id`),
-  KEY `photo_id` (`photo_id`),
-  CONSTRAINT `profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `profiles_ibfk_2` FOREIGN KEY (`photo_id`) REFERENCES `media` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+INSERT INTO `object_type` VALUES ('1','users','1985-08-09 20:20:24','1994-11-15 06:04:54'),
+('2','media','2000-06-08 14:04:48','2002-01-16 12:41:16'),
+('3','messages','2014-07-04 05:17:48','1983-07-13 20:03:06'); 
 
 INSERT INTO `profiles` VALUES ('1','Mayra','Roob','M','2008-02-13','East Morris','1','2009-12-09 04:38:13','1976-02-26 13:13:51'),
 ('2','Rosamond','Tremblay','M','2012-10-04','Willville','2','2012-05-18 00:24:09','2015-06-01 06:19:11'),
@@ -1034,34 +886,13 @@ INSERT INTO `profiles` VALUES ('1','Mayra','Roob','M','2008-02-13','East Morris'
 ('99','John','Weissnat','M','1993-01-15','Terryborough','99','1987-05-17 19:25:56','2016-10-20 02:51:57'),
 ('100','Autumn','Quitzon','M','1987-07-10','Lake Elvisville','100','2009-03-02 10:06:32','1975-09-27 12:29:11'); 
 
-
-DROP TABLE IF EXISTS `roles`;
-CREATE TABLE `roles` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `roles` VALUES ('1','consequatur','1994-02-18 16:03:05','1997-12-03 07:00:44'),
-('2','magni','1970-11-05 06:48:03','2013-09-26 05:39:09'),
-('3','unde','1981-07-07 06:42:57','2006-06-11 08:30:03'),
-('4','iste','2011-06-27 15:05:48','2006-09-19 19:10:29'),
-('5','id','1986-01-22 02:46:42','1996-08-08 00:58:36'),
-('6','cumque','1987-06-23 20:51:20','1997-10-03 20:31:45'),
-('7','sed','2017-07-12 11:37:41','1998-09-09 09:13:53'); 
-
-
-DROP TABLE IF EXISTS `user_roles`;
-CREATE TABLE `user_roles` (
-  `user_id` int(10) unsigned NOT NULL,
-  `role_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`user_id`,`role_id`),
-  KEY `role_id` (`role_id`),
-  CONSTRAINT `user_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `user_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+INSERT INTO `roles` VALUES ('1','admin','1994-02-18 16:03:05','1997-12-03 07:00:44'),
+('2','user','1970-11-05 06:48:03','2013-09-26 05:39:09'),
+('3','author','1981-07-07 06:42:57','2006-06-11 08:30:03'),
+('4','moderator','2011-06-27 15:05:48','2006-09-19 19:10:29'),
+('5','owner','1986-01-22 02:46:42','1996-08-08 00:58:36'),
+('6','redactor','1987-06-23 20:51:20','1997-10-03 20:31:45'),
+('7','expert','2017-07-12 11:37:41','1998-09-09 09:13:53'); 
 
 INSERT INTO `user_roles` VALUES ('1','1'),
 ('2','2'),
@@ -1164,22 +995,6 @@ INSERT INTO `user_roles` VALUES ('1','1'),
 ('99','1'),
 ('100','2'); 
 
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `email` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
-  `email_confirmed` bit(1) NOT NULL,
-  `phone` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `phone_confirmed` bit(1) NOT NULL,
-  `password_hash` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `blocked` bit(1) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 INSERT INTO `users` VALUES ('1','gaylord.darrion','geovanny.gaylord@example.com','1','+30(5)3202100932','0','f9e20680e58746a1f959bcc95d501ac6347c308e','1','2019-08-11 22:18:16','1987-09-25 18:10:40'),
 ('2','carolyn94','jacobs.bill@example.com','0','(493)284-7081x5855','0','15e1fc6310bf18a9ce96f4ce1cb32e42feca1111','0','1990-08-08 03:54:34','2000-12-03 04:05:31'),
 ('3','rkihn','rosina.o\'hara@example.net','0','1-074-109-2670','1','1bf6f593147a7d0fcd679a34bc2478afccdb28be','1','2005-01-06 04:35:42','1982-08-14 02:15:51'),
@@ -1279,16 +1094,4 @@ INSERT INTO `users` VALUES ('1','gaylord.darrion','geovanny.gaylord@example.com'
 ('97','yadira.koepp','creichel@example.org','0','544.771.6317x1732','1','962f69f92afe96798d8260f3dad460ca878aa45b','1','2017-03-01 14:08:55','1986-03-10 13:22:11'),
 ('98','lnolan','alan60@example.org','0','624-192-5245','0','e8261647ca25ff49c6701ef0b0dfcd803b1ec978','0','1992-03-19 04:18:17','1975-06-03 00:24:06'),
 ('99','graham.javonte','bgrant@example.org','1','1-643-716-3224','1','f01416903b629f5ccaba86acd2633651eafa920a','0','1993-11-27 11:37:24','1975-04-13 15:52:34'),
-('100','jordon.swift','adell.ferry@example.com','1','910-428-1879x608','1','88a9321cc7d7d3b1e615a10a697091ac0193efb2','1','2019-07-06 02:51:45','1982-10-12 23:01:31'); 
-
-
-
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
+('100','jordon.swift','adell.ferry@example.com','1','910-428-1879x608','1','88a9321cc7d7d3b1e615a10a697091ac0193efb2','1','2019-07-06 02:51:45','1982-10-12 23:01:31');
