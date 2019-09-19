@@ -274,7 +274,8 @@ INSERT INTO users (name, email, email_confirmed, phone, phone_confirmed, passwor
 
 select * from users;
 
-INSERT INTO `user_roles` VALUES ('1','1'),
+INSERT INTO user_roles VALUES
+('1','1'),
 ('2','2'),
 ('3','3'),
 ('4','4'),
@@ -375,18 +376,23 @@ INSERT INTO `user_roles` VALUES ('1','1'),
 ('99','1'),
 ('100','2'); 
 
-INSERT INTO `media_types` VALUES ('1','zip','1992-03-19 03:28:35','2018-03-19 19:43:47'),
-('2','xbm','2003-06-09 14:06:19','1976-03-01 23:48:05'),
-('3','rip','1995-12-05 17:03:43','2009-03-19 03:46:58'),
-('4','class','1981-08-16 13:43:52','1990-11-27 09:33:30'),
-('5','pps','2017-04-11 16:42:14','2007-09-15 19:33:33'),
-('6','sitx','1980-08-01 13:53:46','1970-06-28 04:31:26'),
-('7','deb','2010-03-14 15:13:19','2000-03-27 20:08:42'),
-('8','wqd','1980-07-07 06:39:36','1996-09-09 13:04:00'),
-('9','atom','1987-10-05 09:28:15','1983-03-23 23:18:22'),
-('10','uvvu','1979-01-31 07:22:10','2014-09-12 07:06:32'),
-('11','cpio','1990-01-09 13:54:06','1984-04-07 05:31:13'),
-('12','kwt','1982-02-03 10:02:44','1999-12-14 11:05:53'); 
+select * from user_roles;
+
+INSERT INTO media_types (name) VALUES
+('zip'),
+('xbm'),
+('rip'),
+('class'),
+('pps'),
+('sitx'),
+('deb'),
+('wqd'),
+('atom'),
+('uvvu'),
+('cpio'),
+('kwt'); 
+
+select * from media_types;
 
 INSERT INTO `media` VALUES ('1','1','1','/3a24967a55cad67a31d4e2ef355094cc.jpg','353386787','Fuga commodi vitae qui cumque. Alias consequatur alias praesentium. Ullam rerum porro saepe blanditiis et iusto. Molestiae molestiae alias architecto voluptatem.','1971-09-12 22:11:50','1978-06-08 16:06:42'),
 ('2','2','2','/c7f0fea4346cf24675407cfb18cdc1c1.jpg','22','Eos cumque provident perferendis doloribus est ea quas. Accusamus pariatur aliquid voluptatem natus doloribus expedita. Rerum quidem beatae nisi alias. Consectetur aut sed nemo adipisci.','2009-06-26 11:32:25','1991-07-28 12:42:06'),
