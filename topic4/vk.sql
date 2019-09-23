@@ -155,7 +155,7 @@ create table communities_users (
 drop table if exists object_types;
 create table object_types (
     id int unsigned not null auto_increment primary key,
-    name varchar(255) not null,
+    name varchar(255) not null unique,
     created_at timestamp default current_timestamp,
     updated_at timestamp default current_timestamp on update current_timestamp
 );
