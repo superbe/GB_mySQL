@@ -457,3 +457,18 @@ ORDER BY
 	p.birthday DESC 
 LIMIT 10;
 
+-- Урок 6. Задание 4.
+-- Определить кто больше поставил лайков (всего) - мужчины или женщины?
+
+SELECT 
+	sex, COUNT(sex) AS cnt 
+FROM
+	(SELECT 
+		(SELECT p.sex FROM profiles p WHERE l.user_id = p.user_id) AS sex
+	FROM 
+		likes l) gender
+GROUP BY
+	sex
+ORDER BY 
+	cnt DESC
+LIMIT 1;
