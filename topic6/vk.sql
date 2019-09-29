@@ -152,7 +152,7 @@ create table communities_users (
 );
 
 -- Таблица типов объектов рейтинга.
-drop table if exists object_types;
+drop table if exists target_types;
 create table target_types (
     id int unsigned not null auto_increment primary key,
     name varchar(255) not null unique,
@@ -2114,14 +2114,14 @@ INSERT INTO communities_users (community_id, user_id) VALUES
 
 select * from communities_users;
 
-INSERT INTO object_types (name) VALUES
+INSERT INTO target_types (name) VALUES
 ('users'),
 ('media'),
 ('messages'); 
 
-select * from object_types;
+select * from target_types;
 
-INSERT INTO likes (object_id, object_type_id, user_id, value) VALUES
+INSERT INTO likes (target_id, target_type_id, user_id, value) VALUES
 ('1','1','1','2'),
 ('2','2','2','-7'),
 ('3','3','3','10'),
