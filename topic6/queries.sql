@@ -302,3 +302,69 @@ FROM
 	profiles
 HAVING
 	fullname RLIKE '^M.*s$';
+    
+-- Урок 6. Задание 2.
+-- Пусть задан некоторый пользователь.
+-- Из всех друзей этого пользователя найдите человека, который больше всех общался с нашим пользователем.
+
+-- Задали переменную с именем пользователя.
+SET @user_name = 'fpagac';
+
+-- Определили идентификатор пользователя.
+SET @user_id = (SELECT id FROM users WHERE name = @user_name);
+
+SELECT
+	from_user_id, to_user_id, body, delivered, created_at 
+FROM
+	messages
+WHERE
+    (from_user_id = 67 and  to_user_id IN ((
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = 67 AND confirmed_at IS NOT NULL
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = 67 AND confirmed_at IS NOT NULL
+	)))
+	OR (to_user_id = 67 and  from_user_id IN ((
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = 67 AND confirmed_at IS NOT NULL
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = 67 AND confirmed_at IS NOT NULL
+	)))
+;
+	
+
+
+SELECT 
+	*
+FROM
+	profiles
+WHERE
+	user_id IN (
+	(
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = @user_id AND confirmed_at IS NOT NULL
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
+	)          
+);
