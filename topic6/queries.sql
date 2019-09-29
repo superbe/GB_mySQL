@@ -472,3 +472,27 @@ GROUP BY
 ORDER BY 
 	cnt DESC
 LIMIT 1;
+
+-- Урок 6. Задание 5.
+-- Найти 10 пользователей, которые проявляют наименьшую 
+-- активность в использовании социальной сети.
+
+SELECT 
+	us_id, (SELECT CONCAT(p.first_name, ' ', p.last_name) FROM profiles p WHERE p.user_id = res.us_id) AS full_name, COUNT(us_id) AS cnt
+FROM 
+	((SELECT user_id as us_id FROM media)
+	UNION ALL
+	(SELECT from_user_id as us_id FROM messages)
+	UNION ALL
+	(SELECT user_id as us_id FROM friendship)
+	UNION ALL
+	(SELECT user_id as us_id FROM communities_users)
+	UNION ALL
+	(SELECT user_id as us_id FROM likes)
+	UNION ALL
+	(SELECT user_id as us_id FROM posts)) res
+GROUP BY
+	us_id
+ORDER BY 
+	cnt
+LIMIT 10;
