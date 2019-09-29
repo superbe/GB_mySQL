@@ -2042,7 +2042,6 @@ INSERT INTO communities_users (community_id, user_id) VALUES
 ('22','69'),
 ('13','79'),
 ('67','61'),
-('71','13'),
 ('16','64'),
 ('7','25'),
 ('58','60'),
