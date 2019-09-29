@@ -4,20 +4,21 @@
 
 USE vk;
 
--- Обновляем данные для медиатипа.
-update media_types set name = 'application' where id = 1;
-update media_types set name = 'audio' where id = 2;
-update media_types set name = 'example' where id = 3;
-update media_types set name = 'image' where id = 4;
-update media_types set name = 'message' where id = 5;
-update media_types set name = 'model' where id = 6;
-update media_types set name = 'multipart' where id = 7;
-update media_types set name = 'text' where id = 8;
-update media_types set name = 'video' where id = 9;
-
+-- Нашли пользователей с большим количеством картинок.
+SELECT 
+	user_id,
+    count(user_id) as count_user_id
+FROM
+	media 
+Where
+	media_type_id = (SELECT id FROM media_types WHERE name = 'image')
+group by
+	user_id
+order by
+	count_user_id desc;
 
 -- Задали переменную с именем пользователя.
-SET @user_name = 'ashley.mccullough';
+SET @user_name = 'rkihn';
 
 -- Определили идентификатор пользователя.
 SET @user_id = (SELECT id FROM users WHERE name = @user_name);
@@ -211,9 +212,93 @@ WHERE target_id IN (
 						user_id 
 					FROM
 						friendship 
-					WHERE user_id = @user_id AND status_id = (SELECT id FROM friendship_statuses WHERE name = 'friend')
+					WHERE friend_id = @user_id AND status_id = (SELECT id FROM friendship_statuses WHERE name = 'friend')
 				))
-	) AND target_type_id IN (1, 4, 5)
+	) AND target_type_id IN (2, 3, 8, 10)
 	GROUP BY target_id;
     
-    --posts, communities, friendship, messages, profiles, media, users
+SELECT 
+	* 
+FROM
+	likes 
+WHERE
+	target_id = @user_id AND target_type_id IN (2, 3, 8, 10) 
+ORDER BY
+	target_type_id;
+    
+-- Архив с правильной сортировкой новостей по месяцам
+SELECT
+	COUNT(id) AS news,
+    MONTHNAME(created_at) AS month_news
+FROM
+	media
+WHERE
+	YEAR(created_at) = YEAR(NOW())
+GROUP BY
+	month_news
+ORDER BY
+	MONTH(month_news) DESC;
+    
+-- Выбираем сообщения от пользователя и к пользователю
+SELECT
+	from_user_id, to_user_id, body, delivered, created_at 
+FROM
+	messages
+WHERE
+	from_user_id = @user_id OR to_user_id = @user_id
+ORDER BY
+	created_at DESC;
+    
+-- Непрочитанные сообщения
+SELECT
+	from_user_id, to_user_id, body, 
+	IF(delivered, 'delivered', 'not delivered') AS status 
+FROM
+	messages
+WHERE
+	(from_user_id = @user_id OR to_user_id = @user_id) AND delivered IS NOT TRUE
+ORDER BY
+	created_at DESC;
+    
+-- Выводим друзей пользователя с преобразованием пола и возраста 
+SELECT 
+	CONCAT(first_name, ' ', last_name) AS friend, 
+	CASE (sex)
+		WHEN 'm' THEN 'man'
+		WHEN 'f' THEN 'women'
+	END AS sex,
+    TIMESTAMPDIFF(YEAR, birthday, NOW()) AS age
+FROM
+	profiles
+WHERE
+	user_id IN (
+	(
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = @user_id AND confirmed_at IS NOT NULL AND status_id = (SELECT id FROM friendship_statuses WHERE name = 'friend')
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = @user_id AND confirmed_at IS NOT NULL AND status_id = (SELECT id FROM friendship_statuses WHERE name = 'friend')
+	)          
+);
+
+-- Поиск пользователя по шаблонам имени  
+SELECT
+	CONCAT(first_name, ' ', last_name) AS fullname  
+FROM
+	profiles
+HAVING
+	fullname LIKE 'M%';
+  
+-- Используем регулярные выражения
+SELECT
+	CONCAT(first_name, ' ', last_name) AS fullname  
+FROM
+	profiles
+HAVING
+	fullname RLIKE '^M.*s$';
