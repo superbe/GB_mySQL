@@ -313,48 +313,13 @@ SET @user_name = 'fpagac';
 -- Определили идентификатор пользователя.
 SET @user_id = (SELECT id FROM users WHERE name = @user_name);
 
+-- Просто вывели все сообщения для заданного пользователя.
 SELECT
 	from_user_id, to_user_id, body, delivered, created_at 
 FROM
 	messages
 WHERE
-    (from_user_id = 67 and  to_user_id IN ((
-		SELECT
-			friend_id 
-		FROM
-			friendship 
-		WHERE user_id = 67 AND confirmed_at IS NOT NULL
-	) UNION (
-		SELECT
-			user_id 
-		FROM
-			friendship 
-		WHERE friend_id = 67 AND confirmed_at IS NOT NULL
-	)))
-	OR (to_user_id = 67 and  from_user_id IN ((
-		SELECT
-			friend_id 
-		FROM
-			friendship 
-		WHERE user_id = 67 AND confirmed_at IS NOT NULL
-	) UNION (
-		SELECT
-			user_id 
-		FROM
-			friendship 
-		WHERE friend_id = 67 AND confirmed_at IS NOT NULL
-	)))
-;
-	
-
-
-SELECT 
-	*
-FROM
-	profiles
-WHERE
-	user_id IN (
-	(
+    (from_user_id = @user_id and  to_user_id IN ((
 		SELECT
 			friend_id 
 		FROM
@@ -366,5 +331,129 @@ WHERE
 		FROM
 			friendship 
 		WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
-	)          
-);
+	)))
+	OR (to_user_id = @user_id and  from_user_id IN ((
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = @user_id AND confirmed_at IS NOT NULL
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
+	)));
+    
+-- Немного переписали.
+((SELECT
+	to_user_id as friend_id
+FROM
+	messages
+WHERE
+    from_user_id = @user_id and  to_user_id IN ((
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = @user_id AND confirmed_at IS NOT NULL
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
+	))
+) UNION ALL (
+SELECT
+	from_user_id as friend_id
+FROM
+	messages
+WHERE
+    to_user_id = @user_id and  from_user_id IN ((
+		SELECT
+			friend_id 
+		FROM
+			friendship 
+		WHERE user_id = @user_id AND confirmed_at IS NOT NULL
+	) UNION (
+		SELECT
+			user_id 
+		FROM
+			friendship 
+		WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
+	))
+));
+
+-- Получаем самого болтливого друга.
+SELECT
+	CONCAT('Самый болтливый друг: ', first_name, ' ', last_name) AS chatterer
+FROM
+	profiles
+WHERE
+	user_id = (
+		SELECT
+			friend_id
+		FROM
+			(SELECT 
+				friend_id, count(friend_id) as count_messages 
+			FROM
+				((SELECT
+					to_user_id AS friend_id
+				FROM
+					messages
+				WHERE
+					from_user_id = @user_id AND  to_user_id IN ((
+						SELECT
+							friend_id 
+						FROM
+							friendship 
+						WHERE user_id = @user_id AND confirmed_at IS NOT NULL
+					) UNION (
+						SELECT
+							user_id 
+						FROM
+							friendship 
+						WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
+					))
+				) UNION ALL (
+				SELECT
+					from_user_id AS friend_id
+				FROM
+					messages
+				WHERE
+					to_user_id = @user_id AND  from_user_id IN ((
+						SELECT
+							friend_id 
+						FROM
+							friendship 
+						WHERE user_id = @user_id AND confirmed_at IS NOT NULL
+					) UNION (
+						SELECT
+							user_id 
+						FROM
+							friendship 
+						WHERE friend_id = @user_id AND confirmed_at IS NOT NULL
+					))
+				)) result
+				GROUP BY friend_id
+				ORDER BY count_messages DESC
+				LIMIT 1) friend_id_result);
+    -- <Берем первого, остальным не повезло.
+
+-- Урок 6. Задание 3.
+-- Подсчитать общее количество лайков, которые получили 10 самых молодых пользователей.
+
+-- Нашли 10 самых молодых.
+SELECT * FROM profiles ORDER BY birthday DESC LIMIT 10;
+
+-- Посчитали количество лайков.
+SELECT
+	SUM(DISTINCT (SELECT COUNT(l.id) AS cnt FROM likes AS l WHERE l.user_id = p.user_id)) AS sum_result
+FROM 
+	profiles p 
+ORDER BY 
+	p.birthday DESC 
+LIMIT 10;
+
