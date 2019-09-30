@@ -49,7 +49,8 @@ SELECT
     p.price AS 'Цена'
 FROM 
 	products p;
-    
+
+-- Исправленное.    
 SELECT 
 	c.name AS 'Каталог',
 	p.name AS 'Название',
