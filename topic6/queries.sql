@@ -447,15 +447,60 @@ WHERE
 
 -- Нашли 10 самых молодых.
 SELECT * FROM profiles ORDER BY birthday DESC LIMIT 10;
-
+-- 111
 -- Посчитали количество лайков.
-SELECT
-	SUM(DISTINCT (SELECT COUNT(l.id) AS cnt FROM likes AS l WHERE l.user_id = p.user_id)) AS sum_result
+SELECT 
+	sum((SELECT COUNT(*) AS cnt FROM likes AS l WHERE l.user_id = p.user_id)) AS sum_result
 FROM 
 	profiles p 
 ORDER BY 
 	p.birthday DESC 
 LIMIT 10;
+
+-- Исправленное.
+SELECT 
+	COUNT(*)
+FROM 
+	likes l
+WHERE 
+	l.target_id IN (Select user_id as id FROM (SELECT * FROM profiles ORDER BY birthday DESC LIMIT 10) AS res) 
+		AND 
+			l.target_type_id = (SELECT tt.id FROM target_types tt WHERE tt.name = 'users');
+
+-- Проверка.
+Select user_id as id FROM (SELECT * FROM profiles ORDER BY birthday DESC LIMIT 10) AS res;
+-- (57,12,1,6,56,24,100,4,9,52)
+
+SELECT * FROM likes WHERE target_id IN (57,12,1,6,56,24,100,4,9,52) order by target_type_id;
+-- '108', '68', '9', '1', '2019-09-29 14:52:55'
+-- '345', '12', '100', '1', '2019-09-29 14:52:55'
+-- '357', '61', '12', '1', '2019-09-29 14:52:55'
+-- '410', '75', '6', '1', '2019-09-29 14:52:55'
+-- '414', '98', '57', '1', '2019-09-29 14:52:55'
+-- '496', '14', '100', '1', '2019-09-29 14:52:55'
+-- '505', '50', '57', '1', '2019-09-29 14:52:55'
+-- '588', '52', '100', '1', '2019-09-29 14:52:55'
+-- '648', '83', '9', '1', '2019-09-29 14:52:55'
+-- '765', '43', '56', '1', '2019-09-29 14:52:55'
+-- '1', '83', '52', '2', '2019-09-29 14:52:55'
+
+SELECT * FROM target_types;
+-- '1', 'users', '2019-09-29 14:52:55', '2019-09-29 14:52:55'
+
+SELECT * FROM likes WHERE target_id IN (57,12,1,6,56,24,100,4,9,52) and target_type_id = 1;
+-- '108', '68', '9', '1', '2019-09-29 14:52:55'
+-- '345', '12', '100', '1', '2019-09-29 14:52:55'
+-- '357', '61', '12', '1', '2019-09-29 14:52:55'
+-- '410', '75', '6', '1', '2019-09-29 14:52:55'
+-- '414', '98', '57', '1', '2019-09-29 14:52:55'
+-- '496', '14', '100', '1', '2019-09-29 14:52:55'
+-- '505', '50', '57', '1', '2019-09-29 14:52:55'
+-- '588', '52', '100', '1', '2019-09-29 14:52:55'
+-- '648', '83', '9', '1', '2019-09-29 14:52:55'
+-- '765', '43', '56', '1', '2019-09-29 14:52:55'
+
+SELECT COUNT(*) FROM likes WHERE target_id IN (57,12,1,6,56,24,100,4,9,52) and target_type_id = 1;
+-- '10'
 
 -- Урок 6. Задание 4.
 -- Определить кто больше поставил лайков (всего) - мужчины или женщины?
