@@ -29,6 +29,16 @@ FROM
 WHERE
 	id IN (SELECT DISTINCT user_id FROM orders);
     
+-- Исправленное.
+SELECT DISTINCT 
+	u.id, u.name 
+FROM 
+	orders AS o 
+    JOIN 
+		users AS u 
+		ON u.id = o.user_id;
+
+    
 -- Урок 7. Задание 2. Выведите список товаров products и разделов 
 -- catalogs, который соответствует товару.
 
@@ -39,3 +49,15 @@ SELECT
     p.price AS 'Цена'
 FROM 
 	products p;
+    
+SELECT 
+	c.name AS 'Каталог',
+	p.name AS 'Название',
+    p.desription AS 'Описание',
+    p.price AS 'Цена' 
+FROM 
+	products AS p 
+		JOIN 
+			catalogs AS c 
+		ON 
+			p.catalog_id = c.id;
