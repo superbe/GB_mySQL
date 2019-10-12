@@ -9,25 +9,48 @@ USE shop;
 
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS hello//
-CREATE PROCEDURE hello(OUT value TEXT)
+-- DROP PROCEDURE IF EXISTS hello//
+-- CREATE PROCEDURE hello(OUT value TEXT)
+-- BEGIN
+-- 	DECLARE hour INT;
+--     SET hour = HOUR(NOW());
+--     CASE
+-- 		WHEN hour BETWEEN 0 AND 5 THEN
+-- 			SET value = "Доброй ночи!";
+-- 		WHEN hour BETWEEN 6 AND 11 THEN
+-- 			SET value = "Доброе утро!";
+-- 		WHEN hour BETWEEN 12 AND 17 THEN
+-- 			SET value = "Доброй день!";
+-- 		WHEN hour BETWEEN 18 AND 23 THEN
+-- 			SET value = "Добрый вечер!";
+-- 	END CASE;
+-- END//
+-- SET @greeting = ""//
+-- CALL hello(@greeting)//
+-- SELECT @greeting//
+
+-- Исправленное.
+
+DROP FUNCTION IF EXISTS hello//
+CREATE FUNCTION hello()
+RETURNS TINYTEXT
+DETERMINISTIC
 BEGIN
 	DECLARE hour INT;
     SET hour = HOUR(NOW());
     CASE
 		WHEN hour BETWEEN 0 AND 5 THEN
-			SET value = "Доброй ночи!";
+			RETURN "Доброй ночи!";
 		WHEN hour BETWEEN 6 AND 11 THEN
-			SET value = "Доброе утро!";
+			RETURN "Доброе утро!";
 		WHEN hour BETWEEN 12 AND 17 THEN
-			SET value = "Доброй день!";
+			RETURN "Доброй день!";
 		WHEN hour BETWEEN 18 AND 23 THEN
-			SET value = "Добрый вечер!";
+			RETURN "Добрый вечер!";
 	END CASE;
 END//
-SET @greeting = ""//
-CALL hello(@greeting)//
-SELECT @greeting//
+
+SELECT NOW(), hello()//
 
 -- Задание 2.
 -- В таблице products есть два текстовых поля: name с названием товара и description 
