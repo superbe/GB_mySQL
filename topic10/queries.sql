@@ -11,8 +11,8 @@ DROP INDEX target_types_name_uq ON target_types;
 CREATE UNIQUE INDEX target_types_name_uq ON target_types(name);
 
 -- Индексируем медиа.
--- DROP INDEX media_user_id_media_type_id_idx ON media;
--- CREATE INDEX media_user_id_media_type_id_idx ON media(user_id, media_type_id);
+DROP INDEX media_user_id_media_type_id_idx ON media;
+CREATE INDEX media_user_id_media_type_id_idx ON media(user_id, media_type_id);
 
 -- Индексируем медиа.
 DROP INDEX media_created_at_idx ON media;
@@ -35,16 +35,16 @@ DROP INDEX friendship_user_id_confirmed_at_status_id_idx ON friendship;
 CREATE INDEX friendship_user_id_confirmed_at_status_id_idx ON friendship(user_id, confirmed_at, status_id);
 
 -- Индексируем друзей пользователя.
--- DROP INDEX friendship_friend_id_confirmed_at_status_id_idx ON friendship;
--- CREATE INDEX friendship_friend_id_confirmed_at_status_id_idx ON friendship(friend_id, confirmed_at, status_id);
+DROP INDEX friendship_friend_id_confirmed_at_status_id_idx ON friendship;
+CREATE INDEX friendship_friend_id_confirmed_at_status_id_idx ON friendship(friend_id, confirmed_at, status_id);
 
 -- Индексируем друзей лайки.
 DROP INDEX likes_target_id_target_type_id_idx ON likes;
 CREATE INDEX likes_target_id_target_type_id_idx ON likes(target_id, target_type_id);
 
 -- Индексируем лайки друзей.
--- DROP INDEX likes_user_id_idx ON likes;
--- CREATE INDEX likes_user_id_idx ON likes(user_id);
+DROP INDEX likes_user_id_idx ON likes;
+CREATE INDEX likes_user_id_idx ON likes(user_id);
 
 -- Индексируем сообщения.
 DROP INDEX messages_from_user_id_to_user_id_created_at_idx ON messages;
@@ -63,9 +63,9 @@ DROP INDEX users_email_uq ON users;
 CREATE UNIQUE INDEX users_email_uq ON users(email);
 
 -- Индексируем группы пользователя.
--- DROP INDEX communities_users_user_id_idx ON communities_users;
--- CREATE INDEX communities_users_user_id_idx ON communities_users(user_id);
+DROP INDEX communities_users_user_id_idx ON communities_users;
+CREATE INDEX communities_users_user_id_idx ON communities_users(user_id);
 
 -- Индексируем посты пользователя.
--- DROP INDEX posts_user_id_idx ON posts;
--- CREATE INDEX posts_user_id_idx ON posts(user_id);
+DROP INDEX posts_user_id_idx ON posts;
+CREATE INDEX posts_user_id_idx ON posts(user_id);
