@@ -1,0 +1,90 @@
+-- Организуйте хранение категорий и товарных позиций учебной базы данных shop в СУБД MongoDB.
+
+-- Устанавливаем ключ
+
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+
+-- Создали список файлов установки mongoDB
+
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+
+-- Загрузили пакеты установки
+
+sudo apt-get update
+
+-- Устанавливаем mongoDB
+
+sudo apt-get install -y mongodb-org
+
+-- Запускаем mongoDB
+
+sudo service mongod start
+
+-- Запустили консоль mongo
+mongo
+
+-- Посмотрели версию
+
+db.version()
+
+-- 4.2.0
+
+-- Посмотрели установленные базы
+
+show dbs
+
+-- Установлены системные
+
+-- Переходим в базу shop
+
+use shop
+
+-- Наполняем каталог
+
+db.catalogs.insert({name: 'Процессоры'})
+db.catalogs.insert({name: 'Мат.платы'})
+db.catalogs.insert({name: 'Видеокарты'})
+
+-- Проверили вставленный каталог и получили идентификаторы записей
+
+db.catalogs.find()
+
+{ "_id" : ObjectId("5dab3065bb7d6ce5a4d7356e"), "name" : "Процессоры" }
+{ "_id" : ObjectId("5dab30dbbb7d6ce5a4d7356f"), "name" : "Мат.платы" }
+{ "_id" : ObjectId("5dab30eabb7d6ce5a4d73570"), "name" : "Видеокарты" }
+
+-- Добавляем товарные позиции
+
+db.products.insert({name:'Intel Core i3-8100',description:'Процессор для настольных персональных компьютеров, основанных на платформе Intel.',price:7890.00,catalog_id: new ObjectId("5dab3065bb7d6ce5a4d7356e")})
+db.products.insert({name:'Intel Core i5-7400',description:'Процессор для настольных персональных компьютеров, основанных на платформе Intel.',price:12700.00,catalog_id: new ObjectId("5dab3065bb7d6ce5a4d7356e")})
+db.products.insert({name:'AMD FX-8320E',description:'Процессор для настольных персональных компьютеров, основанных на платформе AMD.',price:4780.00,catalog_id: new ObjectId("5dab3065bb7d6ce5a4d7356e")})
+db.products.insert({name:'AMD FX-8320',description:'Процессор для настольных персональных компьютеров, основанных на платформе AMD.',price:7120.00,catalog_id: new ObjectId("5dab3065bb7d6ce5a4d7356e")})
+db.products.insert({name:'ASUS ROG MAXIMUS X HERO',description:'Материнская плата ASUS ROG MAXIMUS X HERO, Z370, Socket 1151-V2, DDR4, ATX',price:19310.00,catalog_id: new ObjectId("5dab30dbbb7d6ce5a4d7356f")})
+db.products.insert({name:'Gigabyte H310M S2H',description:'Материнская плата Gigabyte H310M S2H, H310, Socket 1151-V2, DDR4, mATX',price:4790.00,catalog_id: new ObjectId("5dab30dbbb7d6ce5a4d7356f")})
+db.products.insert({name:'MSI B250M GAMING PRO',description:'Материнская плата MSI B250M GAMING PRO, B250, Socket 1151, DDR4, mATX',price:5060.00,catalog_id: new ObjectId("5dab30dbbb7d6ce5a4d7356f")})
+
+-- Проверили вставленные продукты
+
+db.products.find()
+
+
+{ "_id" : ObjectId("5dab32bcbb7d6ce5a4d73571"), "name" : "Intel Core i3-8100", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе Intel.", "price" : 7890, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34d5bb7d6ce5a4d73572"), "name" : "Intel Core i5-7400", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе Intel.", "price" : 12700, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34e5bb7d6ce5a4d73573"), "name" : "AMD FX-8320E", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе AMD.", "price" : 4780, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34f2bb7d6ce5a4d73574"), "name" : "AMD FX-8320", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе AMD.", "price" : 7120, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34fcbb7d6ce5a4d73575"), "name" : "ASUS ROG MAXIMUS X HERO", "description" : "Материнская плата ASUS ROG MAXIMUS X HERO, Z370, Socket 1151-V2, DDR4, ATX", "price" : 19310, "catalog_id" : ObjectId("5dab30dbbb7d6ce5a4d7356f") }
+{ "_id" : ObjectId("5dab3507bb7d6ce5a4d73576"), "name" : "Gigabyte H310M S2H", "description" : "Материнская плата Gigabyte H310M S2H, H310, Socket 1151-V2, DDR4, mATX", "price" : 4790, "catalog_id" : ObjectId("5dab30dbbb7d6ce5a4d7356f") }
+{ "_id" : ObjectId("5dab3515bb7d6ce5a4d73577"), "name" : "MSI B250M GAMING PRO", "description" : "Материнская плата MSI B250M GAMING PRO, B250, Socket 1151, DDR4, mATX", "price" : 5060, "catalog_id" : ObjectId("5dab30dbbb7d6ce5a4d7356f") }
+
+db.products.find({catalog_id: ObjectId("5dab3065bb7d6ce5a4d7356e")})
+
+{ "_id" : ObjectId("5dab32bcbb7d6ce5a4d73571"), "name" : "Intel Core i3-8100", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе Intel.", "price" : 7890, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34d5bb7d6ce5a4d73572"), "name" : "Intel Core i5-7400", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе Intel.", "price" : 12700, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34e5bb7d6ce5a4d73573"), "name" : "AMD FX-8320E", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе AMD.", "price" : 4780, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+{ "_id" : ObjectId("5dab34f2bb7d6ce5a4d73574"), "name" : "AMD FX-8320", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе AMD.", "price" : 7120, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+
+db.products.find({_id:ObjectId("5dab34d5bb7d6ce5a4d73572")})
+
+{ "_id" : ObjectId("5dab34d5bb7d6ce5a4d73572"), "name" : "Intel Core i5-7400", "description" : "Процессор для настольных персональных компьютеров, основанных на платформе Intel.", "price" : 12700, "catalog_id" : ObjectId("5dab3065bb7d6ce5a4d7356e") }
+
+-- Скрин mongodb.png

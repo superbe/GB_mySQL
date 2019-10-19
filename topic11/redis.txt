@@ -1,0 +1,92 @@
+--  Устанавливаем redis
+
+-- Сначала апгрейдим систему
+
+sudo apt-get update
+
+sudo apt-get upgrade
+
+-- Устанавливаем сервер
+
+sudo apt-get install redis-server
+
+-- Запускаем
+
+sudo systemctl enable redis-server.service
+
+-- Конфигурируем систему
+
+sudo nano /etc/redis/redis.conf
+
+-- Удалить любой ключ, когда достигается максимальный объем памяти 256 МБ
+
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+
+-- Перезапускаем сервер
+
+sudo systemctl restart redis-server.service
+
+-- Запускаем сервер
+
+redis-cli
+
+-- Вышли из сервера
+
+exit
+
+-- Тесты
+
+redis-cli info
+redis-cli info stats
+redis-cli info server
+
+-- 1. В базе данных Redis подберите коллекцию для подсчета посещений с определенных IP-адресов.
+
+-- Запускаем сервер
+
+redis-cli
+
+-- Смотрим справку
+
+help @hash
+
+-- Выбрали команду HINCRBY key field increment
+
+-- Забили данные для нескольких IP-адресов
+
+HINCRBY IP '192.168.0.5' 1
+HINCRBY IP '192.168.0.3' 1
+HINCRBY IP '192.168.0.1' 1
+HINCRBY IP '192.168.0.5' 1
+HINCRBY IP '192.168.0.1' 1
+HINCRBY IP '192.168.0.1' 1
+HINCRBY IP '192.168.0.4' 1
+
+-- Посмотрели результат
+
+HGETALL IP
+
+-- Скрин экрана redis_1.png
+
+-- 2. При помощи базы данных Redis решите задачу поиска имени пользователя по электронному адресу и наоборот, поиск электронного адреса пользователя по его имени.
+
+-- Вносим данные по почте. Создаем два хэша для пользователя и почты.
+
+HSET EMAILS 'babarykin@list.ru' 'Eugene'
+HSET EMAILS 'support@dostoevsky-perm.ru' 'Tech'
+HSET EMAILS 'sale@dostoevsky-perm.ru' 'Oleg'
+
+HSET USERS 'Eugene' 'babarykin@list.ru'
+HSET USERS 'Tech' 'support@dostoevsky-perm.ru'
+HSET USERS 'Oleg' 'sale@dostoevsky-perm.ru'
+
+-- Получаем имя пользователя по электронной почте
+
+HGET EMAILS 'babarykin@list.ru'
+
+-- Получаем электронную почту по имени пользователя
+
+HGET USERS 'Eugene'
+
+-- Скрин экрана redis_2.png
