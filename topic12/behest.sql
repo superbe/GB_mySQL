@@ -83,9 +83,27 @@ CREATE TABLE profiles (
     birthday DATE COMMENT "Дата рождения",
     hometown VARCHAR(100) COMMENT "Город",
     photo_id INT UNSIGNED NOT NULL COMMENT "Идентификатор аватарки",
-    metadata JSON comment "Метаданные профиля пользователя",
+    metadata JSON COMMENT "Метаданные профиля пользователя",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
     CONSTRAINT profiles_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     CONSTRAINT profiles_photo_id_fk FOREIGN KEY (photo_id) REFERENCES media (id) ON DELETE NO ACTION ON UPDATE CASCADE
 ) comment = "Профиль пользователя";
+
+-- Делаю пока только один классификатор. Для простоты выбрал ББК, так как данные проще обработать.
+DROP TABLE IF EXISTS BBK;
+CREATE TABLE BBK (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор раздела классификатора ББК",
+    name VARCHAR(255) NOT NULL COMMENT "Наименование раздела классификатора ББК",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
+) COMMENT = "Классификатор ББК";
+
+DROP TABLE IF EXISTS BBK_faset;
+CREATE TABLE BBK_faset (
+    parent_id INT UNSIGNED NOT NULL COMMENT "Идентификатор родительского раздела",
+    child_id INT UNSIGNED NOT NULL COMMENT "Идентификатор родительского раздела",
+    operator VARCHAR(12) NOT NULL COMMENT "Оператор соединения раздела классификатора ББК",
+    CONSTRAINT BBK_faset_parent_id_fk FOREIGN KEY (parent_id) REFERENCES BBK (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT BBK_faset_child_id_fk FOREIGN KEY (child_id) REFERENCES BBK (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Соединение разделов ББК";
