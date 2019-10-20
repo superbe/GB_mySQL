@@ -83,6 +83,7 @@ CREATE TABLE profiles (
     birthday DATE COMMENT "Дата рождения",
     hometown VARCHAR(100) COMMENT "Город",
     photo_id INT UNSIGNED NOT NULL COMMENT "Идентификатор аватарки",
+    metadata JSON comment "Метаданные профиля пользователя",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
     CONSTRAINT profiles_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
