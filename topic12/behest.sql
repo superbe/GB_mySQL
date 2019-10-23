@@ -69,8 +69,8 @@ CREATE TABLE files (
 DROP TABLE IF EXISTS media;
 CREATE TABLE media (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор медиа файла",
-    name VARCHAR(255) NOT NULL UNIQUE COMMENT "Понятное Наименование медиа файла",
-    description VARCHAR(1024) NOT NULL UNIQUE COMMENT "Понятное описание медиа файла",
+    name VARCHAR(255) COMMENT "Понятное Наименование медиа файла",
+    description NVARCHAR(1024) COMMENT "Понятное описание медиа файла",
     media_type_id INT UNSIGNED NOT NULL COMMENT "Идентификатор типа медиа файла",
     user_id INT UNSIGNED NOT NULL COMMENT "Идентификатор собственника медиа файла",
     size INT UNSIGNED NOT NULL COMMENT "Размер медиа файла",
@@ -81,6 +81,14 @@ CREATE TABLE media (
     CONSTRAINT media_media_type_id_fk FOREIGN KEY (media_type_id) REFERENCES media_types (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     CONSTRAINT media_files_hash_fk FOREIGN KEY (files_hash) REFERENCES files (hash) ON DELETE NO ACTION ON UPDATE CASCADE
 ) comment = "Метаданные медиа файла";
+
+DROP TABLE IF EXISTS city;
+CREATE TABLE city (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор города",
+    name VARCHAR(255) NOT NULL COMMENT "Наименование города",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
+) COMMENT = "Города";
 
 DROP TABLE IF EXISTS profiles;
 CREATE TABLE profiles (
@@ -1436,7 +1444,7 @@ INSERT INTO files (hash, file_name) VALUES
 	('0702a05bf772589a44fe8da7648716087df3b506', 'images/ff54d674df37661bbbdb517298b8ea38.jpg'),
 	('1e2d67dbd1568f093be05d2dba811dddd0469937', 'images/ffa58dff35e2f9f08b3b7de502be7811.jpg');
     
-INSERT INTO media (media_type_id, user_id, size, metadata, files_hash) VALUES
+INSERT INTO media (name, description, media_type_id, user_id, size, metadata, files_hash) VALUES
 	('A esse esse accusantium mollitia quidem dolore dolorem ratione vero.', 'Quam dolorum necessitatibus ipsa quaerat. Temporibus minima dignissimos nostrum aut.', 2, 25, 90990342, NULL, '1bef4261e076142014650e9f9aba77ffb81c88ca'),
 	('Ab est est saepe vel eaque aut ab.', 'Et qui ut voluptates corrupti autem odit earum. Quod culpa animi sed quis deserunt sunt. Dicta aut ea atque omnis libero. Eum voluptatibus quos ad eos temporibus.', 2, 40, 621872, NULL, '13606a4c36af85ff3a7c39d9b541a90b0762d250'),
 	('Ab in sint ad in.', 'Eaque aut ut excepturi similique. Ad deserunt in occaecati asperiores. Numquam nobis qui eos ab. Accusamus aut non nihil.', 1, 66, 2, NULL, '423aeabe76d80035eabe7db2776d74c10c55b56a'),
@@ -1888,4 +1896,6 @@ INSERT INTO media (media_type_id, user_id, size, metadata, files_hash) VALUES
 	('Voluptatum consequatur neque et esse odio pariatur.', 'Sit iste qui laboriosam id amet. Numquam ipsam et voluptatum inventore rerum. Sed est dolorum ipsum cumque dolor. Sunt odio corporis minus et et accusamus fugit fugit.', 3, 47, 79216216, NULL, '782b32c974ab41bce87ed5be7f0d0430f485039c'),
 	('Voluptatum debitis ex minus quaerat ut necessitatibus similique similique est.', 'Ipsum repudiandae assumenda unde dicta. Repudiandae labore molestiae perspiciatis alias id voluptatem occaecati. Sit ea eum animi est atque ut dolorem id.', 2, 73, 9057544, NULL, '397648a8782bf11c0b94031526008d1f57000d16');
 
-select * from media;
+INSERT INTO city (name) VALUES
+
+select * from city;

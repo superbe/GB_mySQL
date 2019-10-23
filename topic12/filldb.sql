@@ -1450,7 +1450,9 @@ DROP VIEW IF EXISTS get_fullname;
 CREATE VIEW get_fullname AS ((SELECT
 	ml.name AS last_name,
 	mf.name AS first_name,
-	mm.name AS middle_name
+	mm.name AS middle_name,
+    'm' AS gender,
+    FROM_UNIXTIME(ROUND((RAND() * 1387888821))) AS birthday
     FROM male_first_names mf, male_middle_names mm, male_last_names ml
 ORDER BY rand() DESC
 LIMIT 50)
@@ -1458,7 +1460,11 @@ UNION
 (SELECT
 	fl.name AS last_name,
 	ff.name AS first_name,
-	fm.name AS middle_name
+	fm.name AS middle_name,
+    'f' AS gender,
+    FROM_UNIXTIME(ROUND((RAND() * 1387888821))) AS birthday
     FROM female_first_names ff, female_middle_names fm, female_last_names fl
 ORDER BY rand() DESC
 LIMIT 50)) ORDER BY rand();
+
+SELECT * FROM get_fullname ORDER BY birthday;
