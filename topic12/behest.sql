@@ -23,11 +23,11 @@ CREATE TABLE users (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор учетной записи пользователя",
     name VARCHAR(255) NOT NULL UNIQUE COMMENT "Наименование учетной записи пользователя",
     email VARCHAR(255) NOT NULL UNIQUE COMMENT "Электронная почта пользователя",
-    email_confirmed BIT NOT NULL DEFAULT 0 COMMENT "Подтвержение электронной почты пользователя",
+    email_confirmed BOOLEAN NOT NULL DEFAULT 0 COMMENT "Подтвержение электронной почты пользователя",
     phone VARCHAR(64) NOT NULL COMMENT "Телефон пользователя",
-    phone_confirmed BIT NOT NULL DEFAULT 0 COMMENT "Подтвержение телефона пользователя",
+    phone_confirmed BOOLEAN NOT NULL DEFAULT 0 COMMENT "Подтвержение телефона пользователя",
     password_hash VARCHAR(1024) COMMENT "Хэш пароля пользователя",
-    blocked BIT NOT NULL DEFAULT 0 COMMENT "Блокировка учетной записи пользователя",
+    blocked BOOLEAN NOT NULL DEFAULT 0 COMMENT "Блокировка учетной записи пользователя",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
 ) COMMENT = "Учетная запись пользователя";
@@ -69,6 +69,8 @@ CREATE TABLE files (
 DROP TABLE IF EXISTS media;
 CREATE TABLE media (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор медиа файла",
+    name VARCHAR(255) NOT NULL UNIQUE COMMENT "Понятное Наименование медиа файла",
+    description VARCHAR(1024) NOT NULL UNIQUE COMMENT "Понятное описание медиа файла",
     media_type_id INT UNSIGNED NOT NULL COMMENT "Идентификатор типа медиа файла",
     user_id INT UNSIGNED NOT NULL COMMENT "Идентификатор собственника медиа файла",
     size INT UNSIGNED NOT NULL COMMENT "Размер медиа файла",
@@ -123,8 +125,6 @@ INSERT INTO roles (name) VALUES
 ('owner'),
 ('redactor'),
 ('expert'); 
-
-select * from roles;
 
 INSERT INTO users (name, email, email_confirmed, phone, phone_confirmed, password_hash, blocked) VALUES
 ('gaylord.darrion','geovanny.gaylord@example.com',0,'+30(5)3202100932',0,'f9e20680e58746a1f959bcc95d501ac6347c308e',0),
@@ -227,8 +227,6 @@ INSERT INTO users (name, email, email_confirmed, phone, phone_confirmed, passwor
 ('lnolan','alan60@example.org',0,'624-192-5245',0,'e8261647ca25ff49c6701ef0b0dfcd803b1ec978',0),
 ('graham.javonte','bgrant@example.org',1,'1-643-716-3224',1,'f01416903b629f5ccaba86acd2633651eafa920a',0),
 ('jordon.swift','adell.ferry@example.com',1,'910-428-1879x608',1,'88a9321cc7d7d3b1e615a10a697091ac0193efb2',1);
-
-select * from users;
 
 INSERT INTO user_roles VALUES
 ('1','2'),
@@ -730,8 +728,6 @@ INSERT INTO user_roles VALUES
 ('100','3'),
 ('100','4'),
 ('100','6'); 
-
-select * from user_roles;
 
 INSERT INTO media_types (name) VALUES
 ('audio'),
@@ -1541,3 +1537,5 @@ INSERT INTO media (media_type_id, user_id, size, metadata, files_hash) VALUES
 	(2, 59, 383, NULL, '43e2f019907659059ca3a408959612286dd4eb03'),
 	(1, 44, 124242854, NULL, '44a351f4077de9f362b0371a496dd0f7b6a8e641'),
 	(3, 61, 55195256, NULL, '4606ff1bf63261c6de8834ea84d6d87800025e8a');
+
+select * from media;
