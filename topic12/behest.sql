@@ -109,22 +109,17 @@ CREATE TABLE profiles (
 ) comment = "Профиль пользователя";
 
 -- Делаю пока только один классификатор. Для простоты выбрал ББК, так как данные проще обработать.
-DROP TABLE IF EXISTS BBK;
-CREATE TABLE BBK (
-    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор раздела классификатора ББК",
-    name VARCHAR(255) NOT NULL COMMENT "Наименование раздела классификатора ББК",
+-- Решил на первое время максимально упростить классификатор, поэтому простое дерево. На основе ББК.
+DROP TABLE IF EXISTS classifier;
+CREATE TABLE classifier (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор раздела классификатора",
+    code VARCHAR(127) NOT NULL UNIQUE COMMENT "Код раздела классификатора",
+    name VARCHAR(255) NOT NULL UNIQUE COMMENT "Наименование раздела классификатора",
+    parent_id INT UNSIGNED NOT NULL COMMENT "Идентификатор родительского раздела классификатора",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
-) COMMENT = "Классификатор ББК";
+) COMMENT = "Классификатор";
 
-DROP TABLE IF EXISTS BBK_faset;
-CREATE TABLE BBK_faset (
-    parent_id INT UNSIGNED NOT NULL COMMENT "Идентификатор родительского раздела",
-    child_id INT UNSIGNED NOT NULL COMMENT "Идентификатор родительского раздела",
-    operator VARCHAR(12) NOT NULL COMMENT "Оператор соединения раздела классификатора ББК",
-    CONSTRAINT BBK_faset_parent_id_fk FOREIGN KEY (parent_id) REFERENCES BBK (id) ON DELETE NO ACTION ON UPDATE CASCADE,
-    CONSTRAINT BBK_faset_child_id_fk FOREIGN KEY (child_id) REFERENCES BBK (id) ON DELETE NO ACTION ON UPDATE CASCADE
-) COMMENT = "Соединение разделов ББК";
 
 INSERT INTO roles (name) VALUES
 ('admin'),
@@ -3020,5 +3015,7 @@ SELECT @i:=0;
 
 INSERT INTO profiles (user_id, last_name, first_name, middle_name, gender, birthday, city_id, photo_id)
 SELECT @i:=@i+1 AS user_id, last_name, first_name, middle_name, gender, birthday, city_id, ROUND(RAND()*450) AS photo_id FROM filldb.get_fullname;
+
+INSERT INTO classifier (code, name, parent_id)
 
 select * from profiles;
