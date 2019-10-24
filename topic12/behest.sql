@@ -115,11 +115,185 @@ CREATE TABLE classifier (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор раздела классификатора",
     code VARCHAR(127) NOT NULL UNIQUE COMMENT "Код раздела классификатора",
     name VARCHAR(255) NOT NULL UNIQUE COMMENT "Наименование раздела классификатора",
-    parent_id INT UNSIGNED NOT NULL COMMENT "Идентификатор родительского раздела классификатора",
+    parent_id INT UNSIGNED COMMENT "Идентификатор родительского раздела классификатора",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
 ) COMMENT = "Классификатор";
 
+DROP TABLE IF EXISTS business;
+CREATE TABLE business(
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор вида деятельности",
+    name VARCHAR(255) NOT NULL UNIQUE COMMENT "Наименование вида деятельности",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
+) COMMENT = "Вид деятельности";
+
+DROP TABLE IF EXISTS organization;
+CREATE TABLE organization(
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор организации",
+    name VARCHAR(255) NOT NULL COMMENT "Наименование организации",
+    inn LONG COMMENT "ИНН",
+    business_id INT UNSIGNED NOT NULL COMMENT "Идентификатор вида деятельности",
+    user_id INT UNSIGNED NOT NULL COMMENT "Идентификатор пользователя",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
+    CONSTRAINT organization_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT organization_business_id_fk FOREIGN KEY (business_id) REFERENCES business (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Организация";
+
+DROP TABLE IF EXISTS cards;
+CREATE TABLE cards(
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор каталожной карточки",
+    title VARCHAR(255) NOT NULL COMMENT "Заголовок библиографической записи",
+    bibliographic_description NVARCHAR(4096) NOT NULL COMMENT "Библиографическое описание",
+    organization_id INT UNSIGNED NOT NULL COMMENT "Идентификатор учреждения (организации) составившего и/илн выпустившего карточку",
+    user_id INT UNSIGNED NOT NULL COMMENT "Идентификатор пользователя",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
+    CONSTRAINT cards_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT cards_organization_id_fk FOREIGN KEY (organization_id) REFERENCES organization (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Каталожная карточка";
+
+DROP TABLE IF EXISTS keywords;
+CREATE TABLE keywords(
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор ключевого слова",
+    word VARCHAR(255) NOT NULL COMMENT "Ключевое слово",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
+) COMMENT = "Ключевые слова";
+
+DROP TABLE IF EXISTS card_keywords;
+CREATE TABLE card_keywords (
+    card_id INT UNSIGNED NOT NULL COMMENT "Идентификатор каталожной карточки",
+    keyword_id INT UNSIGNED NOT NULL COMMENT "Идентификатор ключевого слова",
+    PRIMARY KEY (card_id, keyword_id),
+    CONSTRAINT card_keywords_card_id_fk FOREIGN KEY (card_id) REFERENCES cards (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT card_keywords_keyword_id_fk FOREIGN KEY (keyword_id) REFERENCES keywords (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Связь каталожной карточки с ключевыми словами";
+
+DROP TABLE IF EXISTS classifier_cards;
+CREATE TABLE classifier_cards (
+    classifier_id INT UNSIGNED NOT NULL COMMENT "Идентификатор раздела классификатора",
+    card_id INT UNSIGNED NOT NULL COMMENT "Идентификатор каталожной карточки",
+    PRIMARY KEY (classifier_id, card_id),
+    CONSTRAINT classifier_cards_classifier_id_fk FOREIGN KEY (classifier_id) REFERENCES classifier (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT classifier_cards_card_id_id_fk FOREIGN KEY (card_id) REFERENCES cards (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Связь каталожной карточки с классификатором";
+
+DROP TABLE IF EXISTS card_ciphers;
+CREATE TABLE card_ciphers (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор шифров",
+    card_id INT UNSIGNED NOT NULL COMMENT "Идентификатор каталожной карточки",
+    CONSTRAINT card_ciphers_card_id_id_fk FOREIGN KEY (card_id) REFERENCES cards (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Шифры документов и сиглы библиотек";
+
+DROP TABLE IF EXISTS publication_type;
+CREATE TABLE publication_type(
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор типа публикации",
+    name VARCHAR(255) NOT NULL UNIQUE COMMENT "Наименование типа публикации",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
+) COMMENT = "Тип публикации";
+
+DROP TABLE IF EXISTS personalities;
+CREATE TABLE personalities (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор персоны",
+    last_name VARCHAR(100) NOT NULL COMMENT "Фамилия",
+    first_name VARCHAR(100) NOT NULL COMMENT "Имя",
+    middle_name VARCHAR(100) NOT NULL COMMENT "Отчество",
+	birthday DATE COMMENT "Дата рождения",
+	deathday DATE COMMENT "Дата смерти",
+	biography TEXT COMMENT "Биография",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи"
+) comment = "Персоналии";
+
+DROP TABLE IF EXISTS publications;
+CREATE TABLE publications (
+    card_id INT UNSIGNED NOT NULL PRIMARY KEY COMMENT "Идентификатор публикации",
+    publication_type_id INT UNSIGNED NOT NULL COMMENT "Идентификатор типа публикации",
+    circumstances TEXT NOT NULL COMMENT "Обстоятельства создания",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
+    CONSTRAINT publications_card_id_fk FOREIGN KEY (card_id) REFERENCES cards (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT publications_publication_type_id_fk FOREIGN KEY (publication_type_id) REFERENCES publication_type (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) comment = "Публикация";
+    
+DROP TABLE IF EXISTS tracker_point;
+CREATE TABLE tracker_point (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор трекера",
+    event_date DATE NOT NULL COMMENT "Дата события",
+    latitude DECIMAL(12,6) NOT NULL COMMENT "Широта",
+	longitude DECIMAL(12,6) NOT NULL COMMENT "Долгота",
+    note TEXT NOT NULL COMMENT "Замечание относительно данного события",
+    publication_id INT UNSIGNED NOT NULL COMMENT "Идентификатор публикации",
+    CONSTRAINT tracker_point_publication_id_fk FOREIGN KEY (publication_id) REFERENCES publications (card_id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Трекер";
+
+DROP TABLE IF EXISTS behests;
+CREATE TABLE behests (
+    publication_id INT UNSIGNED NOT NULL PRIMARY KEY COMMENT "Идентификатор памятника",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
+    CONSTRAINT behest_publication_id_fk FOREIGN KEY (publication_id) REFERENCES publications (card_id) ON DELETE NO ACTION ON UPDATE CASCADE
+) comment = "Памятник";
+
+DROP TABLE IF EXISTS other_publications;
+CREATE TABLE other_publications (
+    behest_id INT UNSIGNED NOT NULL COMMENT "Идентификатор памятника",
+    publication_id INT UNSIGNED NOT NULL COMMENT "Идентификатор публикации",
+    own BOOLEAN NOT NULL DEFAULT 0 COMMENT "Собственное издание",
+    PRIMARY KEY (behest_id, publication_id),
+    CONSTRAINT other_publications_behest_id_fk FOREIGN KEY (behest_id) REFERENCES behests (publication_id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT other_publications_publication_id_fk FOREIGN KEY (publication_id) REFERENCES publications (card_id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Другие издания";
+
+DROP TABLE IF EXISTS documents;
+CREATE TABLE documents (
+    publication_id INT UNSIGNED NOT NULL PRIMARY KEY COMMENT "Идентификатор документа",
+    owner  INT UNSIGNED NOT NULL COMMENT "Собственник документа",
+    author  INT UNSIGNED NOT NULL COMMENT "Автор документа",
+    title VARCHAR(255) NOT NULL UNIQUE COMMENT "Название",
+    annotation VARCHAR(255) NOT NULL UNIQUE COMMENT "Аннотация",
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
+    CONSTRAINT documents_owner_fk FOREIGN KEY (owner) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT documents_author_fk FOREIGN KEY (author) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT documents_publication_id_fk FOREIGN KEY (publication_id) REFERENCES publications (card_id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Документ";
+
+DROP TABLE IF EXISTS authors;
+CREATE TABLE authors (
+    document_id INT UNSIGNED NOT NULL COMMENT "Идентификатор документа",
+    personalitie_id INT UNSIGNED NOT NULL COMMENT "Идентификатор персоны",
+    PRIMARY KEY (document_id, personalitie_id),
+    CONSTRAINT authors_document_id_fk FOREIGN KEY (document_id) REFERENCES documents (publication_id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT authors_personalitie_id_fk FOREIGN KEY (personalitie_id) REFERENCES personalities (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Авторы";
+
+DROP TABLE IF EXISTS pages;
+CREATE TABLE pages (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор страницы",
+    document_id INT UNSIGNED NOT NULL COMMENT "Идентификатор документа",
+    image_id INT UNSIGNED NOT NULL COMMENT "Скан страницы",
+    content TEXT NOT NULL COMMENT "Содержание (текст) страницы",
+    CONSTRAINT pages_document_id_fk FOREIGN KEY (document_id) REFERENCES documents (publication_id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT pages_image_id_fk FOREIGN KEY (image_id) REFERENCES media (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Страница документа";
+
+DROP TABLE IF EXISTS reference_pages;
+CREATE TABLE reference_pages (
+    reference_id INT UNSIGNED NOT NULL COMMENT "Скан страницы",
+    sending_id INT UNSIGNED NOT NULL COMMENT "Скан страницы",
+    PRIMARY KEY (reference_id, sending_id),
+    CONSTRAINT reference_pages_reference_id_fk FOREIGN KEY (reference_id) REFERENCES pages (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT reference_pages_sending_id_fk FOREIGN KEY (sending_id) REFERENCES pages (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Связи между страницами";
+
+-- Индексы и поисковые вещи делать не стал, так как это noSQL. У меня есть свои алгоритмы поиска, 
+-- надо их только перенести с делфи на питон или шарпы. Писано очень давно, функционал напоминает
+-- чем-то эластик, но есть свои фишечки, позволяют настроить автоматическую рубрикацию 
+-- и реализовать пертинентный поиск.
 
 INSERT INTO roles (name) VALUES
 ('admin'),
@@ -3014,9 +3188,9 @@ INSERT INTO city (name) VALUES
 SELECT @i:=0;
 
 INSERT INTO profiles (user_id, last_name, first_name, middle_name, gender, birthday, city_id, photo_id)
-SELECT @i:=@i+1 AS user_id, last_name, first_name, middle_name, gender, birthday, city_id, ROUND(RAND()*450) AS photo_id FROM filldb.get_fullname;
+SELECT @i:=@i+1 AS user_id, last_name, first_name, middle_name, gender, birthday, city_id, ROUND(RAND()*449 + 1) AS photo_id FROM filldb.get_fullname;
 
-INSERT INTO classifier (code, name, parent_id)
+INSERT INTO classifier (code, name, parent_id) VALUES
 ('2','Естественные науки (естествознание)',NULL),
 ('20.1','Человек и окружающая среда. Экология человека. Экология в целом',1),
 ('20.18','Рациональное природопользование. Охрана природы',1),
@@ -3092,7 +3266,7 @@ INSERT INTO classifier (code, name, parent_id)
 ('63.3(0)6','Новейшая история (1918-   )',67),
 ('63.3(0)61','Период 1918-1939гг.',67),
 ('63.3(0)62','Период второй мировой войны (1939-1945)',67),
-('63.3(0)','Период 1945-конец 80-х гг.ХХв.',67),
+('63.3(0)63','Период 1945-конец 80-х гг.ХХв.',67),
 ('63.3(0)64','Период с конца 80-х гг.',67),
 ('63.3(2)','История России и СССР',67),
 ('63.3(2)л6','Исторические музеи. Исторические памятники и памятные места. Охрана исторических памятников',67),
@@ -3281,4 +3455,4 @@ INSERT INTO classifier (code, name, parent_id)
 ('99.2','Сборники игр, развлечений, самоделок',257);
 
 
-select * from profiles;
+select * from classifier;
