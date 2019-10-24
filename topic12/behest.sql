@@ -5,9 +5,9 @@
 -- В папке "Нормативная база" некоторые нормативные и справочные источники.
 -- Сначала запустить filldb.sql.
 
-drop database if exists behest;
-create database behest;
-use behest;
+DROP DATABASE IF EXISTS behest;
+CREATE DATABASE behest;
+USE behest;
 
 -- Роли пользователя определяют права доступа к разделам сайта.
 DROP TABLE IF EXISTS roles;
@@ -98,12 +98,13 @@ CREATE TABLE profiles (
     middle_name VARCHAR(100) NOT NULL COMMENT "Отчество",
     gender CHAR(1) NOT NULL COMMENT "Пол",
     birthday DATE COMMENT "Дата рождения",
-    hometown VARCHAR(100) COMMENT "Город",
+    city_id INT UNSIGNED NOT NULL COMMENT "Идентификатор города",
     photo_id INT UNSIGNED NOT NULL COMMENT "Идентификатор аватарки",
     metadata JSON COMMENT "Метаданные профиля пользователя",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
     CONSTRAINT profiles_user_id_fk FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT profiles_city_id_fk FOREIGN KEY (city_id) REFERENCES city (id) ON DELETE NO ACTION ON UPDATE CASCADE,
     CONSTRAINT profiles_photo_id_fk FOREIGN KEY (photo_id) REFERENCES media (id) ON DELETE NO ACTION ON UPDATE CASCADE
 ) comment = "Профиль пользователя";
 
@@ -3015,4 +3016,9 @@ INSERT INTO city (name) VALUES
 	('Ясный'),
 	('Яхрома');
 
-select * from city;
+SELECT @i:=0;
+
+INSERT INTO profiles (user_id, last_name, first_name, middle_name, gender, birthday, city_id, photo_id)
+SELECT @i:=@i+1 AS user_id, last_name, first_name, middle_name, gender, birthday, city_id, ROUND(RAND()*450) AS photo_id FROM filldb.get_fullname;
+
+select * from profiles;
