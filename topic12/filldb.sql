@@ -46,6 +46,12 @@ CREATE TABLE female_last_names (
     frequency DECIMAL(7,6) NOT NULL DEFAULT 0 COMMENT "Частота"
 ) COMMENT = "Женские фимилии";
 
+-- Вернуть идентификатор случайным образом в диапазоне от 0 до value.
+CREATE FUNCTION random_id(value INT)
+RETURNS INT DETERMINISTIC
+RETURN ROUND(RAND()*(value - 1)) + 1;
+
+
 INSERT INTO male_first_names (name, frequency) VALUES
 ('Артём',0.7326),
 ('Артемий',0.7326),

@@ -93,13 +93,13 @@ CREATE TABLE city (
 DROP TABLE IF EXISTS profiles;
 CREATE TABLE profiles (
     user_id INT UNSIGNED NOT NULL PRIMARY KEY COMMENT "Идентификатор пользователя",
-    last_name VARCHAR(100) NOT NULL COMMENT "Фамилия",
-    first_name VARCHAR(100) NOT NULL COMMENT "Имя",
-    middle_name VARCHAR(100) NOT NULL COMMENT "Отчество",
-    gender CHAR(1) NOT NULL COMMENT "Пол",
+    last_name VARCHAR(100) COMMENT "Фамилия",
+    first_name VARCHAR(100) COMMENT "Имя",
+    middle_name VARCHAR(100) COMMENT "Отчество",
+    gender CHAR(1) COMMENT "Пол",
     birthday DATE COMMENT "Дата рождения",
-    city_id INT UNSIGNED NOT NULL COMMENT "Идентификатор города",
-    photo_id INT UNSIGNED NOT NULL COMMENT "Идентификатор аватарки",
+    city_id INT UNSIGNED COMMENT "Идентификатор города",
+    photo_id INT UNSIGNED COMMENT "Идентификатор аватарки",
     metadata JSON COMMENT "Метаданные профиля пользователя",
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT "Дата создания записи",
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Дата последней правки записи",
@@ -3185,7 +3185,7 @@ INSERT INTO city (name) VALUES
 	('Ясный'),
 	('Яхрома');
 
-SELECT @i:=0;
+SET @i:=0;
 
 INSERT INTO profiles (user_id, last_name, first_name, middle_name, gender, birthday, city_id, photo_id)
 SELECT @i:=@i+1 AS user_id, last_name, first_name, middle_name, gender, birthday, city_id, ROUND(RAND()*449 + 1) AS photo_id FROM filldb.get_fullname;
@@ -4865,5 +4865,88 @@ INSERT INTO card_keywords (card_id, keyword_id) VALUES
 	('52','22'),
 	('36','50');
  
+
+
+-- 54 cards
+-- 262 classifier
+
+-- DROP TABLE IF EXISTS classifier_cards;
+-- CREATE TABLE classifier_cards (
+--     classifier_id INT UNSIGNED NOT NULL COMMENT "Идентификатор раздела классификатора",
+--     card_id INT UNSIGNED NOT NULL COMMENT "Идентификатор каталожной карточки",
+--     PRIMARY KEY (classifier_id, card_id),
+--     CONSTRAINT classifier_cards_classifier_id_fk FOREIGN KEY (classifier_id) REFERENCES classifier (id) ON DELETE NO ACTION ON UPDATE CASCADE,
+--     CONSTRAINT classifier_cards_card_id_id_fk FOREIGN KEY (card_id) REFERENCES cards (id) ON DELETE NO ACTION ON UPDATE CASCADE
+-- ) COMMENT = "Связь каталожной карточки с классификатором";
  
 SELECT * FROM card_keywords;
+
+
+-- Настраиваем систему логирования.
+
+-- Логируем наиболее значимые объекты, это помимо включенного стандартного логирования.
+DROP TABLE IF EXISTS logs;
+CREATE TABLE logs (
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Дата создания',
+	target_table VARCHAR(255) COMMENT 'Целевая таблица',
+	command VARCHAR(16) COMMENT 'Команда',
+	target_id int COMMENT 'Идентификатор целевой записи',
+	content_name VARCHAR(4096) COMMENT 'Поле name в целевой записи'
+) COMMENT = 'Журнал событий' ENGINE = ARCHIVE;
+
+DELIMITER //
+DROP TRIGGER IF EXISTS insert_record_users//
+CREATE TRIGGER insert_record_users AFTER INSERT ON users
+FOR EACH ROW
+BEGIN
+	INSERT INTO logs (target_table, target_id, command, content_name) VALUES ('users', NEW.id, 'insert', CONCAT('Зарегистрирован новый пользователь: ', NEW.name));
+	INSERT INTO profiles (user_id) VALUES (NEW.id);
+END//
+
+DROP TRIGGER IF EXISTS insert_record_cards//
+CREATE TRIGGER insert_record_cards AFTER INSERT ON cards
+FOR EACH ROW BEGIN
+	INSERT INTO logs (target_table, target_id, command, content_name) VALUES ('cards', NEW.id, 'insert', CONCAT('Создана новая карточка: "', NEW.title, '"'));
+	INSERT INTO publications (card_id) VALUES (NEW.id);
+END//
+
+DROP TRIGGER IF EXISTS insert_record_publications//
+CREATE TRIGGER insert_record_publications AFTER INSERT ON publications
+FOR EACH ROW BEGIN
+	INSERT INTO documents (publication_id) VALUES (NEW.card_id);
+END//
+
+DROP TRIGGER IF EXISTS insert_record_behests//
+CREATE TRIGGER insert_record_behests AFTER INSERT ON behests
+FOR EACH ROW BEGIN
+	INSERT INTO logs (target_table, target_id, command, content_name) VALUES ('behests', NEW.publication_id, 'insert', 'Создан новый памятник');
+END//
+
+DROP TRIGGER IF EXISTS delete_record_users//
+CREATE TRIGGER delete_record_users BEFORE DELETE ON users
+FOR EACH ROW
+BEGIN
+	INSERT INTO logs (target_table, target_id, command, content_name) VALUES ('users', OLD.id, 'delete', CONCAT('Пользователь удален: ', OLD.name));
+    DELETE FROM profiles WHERE user_id = OLD.id; 
+END//
+
+DROP TRIGGER IF EXISTS delete_record_cards//
+CREATE TRIGGER delete_record_cards BEFORE DELETE ON cards
+FOR EACH ROW BEGIN
+	INSERT INTO logs (target_table, target_id, command, content_name) VALUES ('cards', OLD.id, 'delete', CONCAT('Карточка удалена: "', OLD.title, '"'));
+    DELETE FROM publications WHERE card_id = OLD.id; 
+END//
+
+DROP TRIGGER IF EXISTS delete_record_publications//
+CREATE TRIGGER delete_record_publications BEFORE DELETE ON publications
+FOR EACH ROW BEGIN
+    DELETE FROM documents WHERE publication_id = OLD.card_id; 
+    DELETE FROM behests WHERE publication_id = OLD.card_id; 
+END//
+
+DROP TRIGGER IF EXISTS delete_record_behests//
+CREATE TRIGGER delete_record_behests BEFORE DELETE ON behests
+FOR EACH ROW BEGIN
+	INSERT INTO logs (target_table, target_id, command, content_name) VALUES ('behests', OLD.publication_id, 'delete', 'Памятник удален');
+END//
+DELIMITER ;
