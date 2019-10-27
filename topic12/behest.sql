@@ -224,11 +224,9 @@ DROP TABLE IF EXISTS tracker_points;
 CREATE TABLE tracker_points (
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор трекера",
     event_date DATE NOT NULL COMMENT "Дата события",
-    latitude DECIMAL(10, 8) NOT NULL COMMENT "Широта",
-	longitude DECIMAL(11, 8) NOT NULL COMMENT "Долгота",
-    note TEXT NOT NULL COMMENT "Замечание относительно данного события",
-    publication_id INT UNSIGNED NOT NULL COMMENT "Идентификатор публикации",
-    CONSTRAINT tracker_point_publication_id_fk FOREIGN KEY (publication_id) REFERENCES publications (card_id) ON DELETE NO ACTION ON UPDATE CASCADE
+    latitude DOUBLE NOT NULL COMMENT "Широта",
+	longitude DOUBLE NOT NULL COMMENT "Долгота",
+    note TEXT COMMENT "Замечание относительно данного события"
 ) COMMENT = "Трекер";
 
 DROP TABLE IF EXISTS publication_tracker_points;
