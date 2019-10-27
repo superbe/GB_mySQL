@@ -2713,6 +2713,16 @@ INSERT INTO tracker_points (event_date, latitude, longitude, note) VALUES
 	(FROM_UNIXTIME(ROUND((RAND() * 1387888821 + 1))),-62.53532305,159.01202944,'Assumenda rerum excepturi dolor quaerat. Ducimus recusandae qui vitae amet alias dignissimos. Perferendis eveniet deserunt soluta temporibus ullam rerum.'),
 	(FROM_UNIXTIME(ROUND((RAND() * 1387888821 + 1))),35.55599719,-34.34536366,'Et odit veritatis voluptates illo magni aut est. Ea eos cum omnis molestiae.');
 
+
+DROP TABLE IF EXISTS publication_tracker_points;
+CREATE TABLE publication_tracker_points (
+    publication_id INT UNSIGNED NOT NULL COMMENT "Идентификатор публикации",
+    tracker_point_id INT UNSIGNED NOT NULL COMMENT "Идентификатор трекера",
+    PRIMARY KEY (publication_id, tracker_point_id),
+    CONSTRAINT publication_tracker_points_publication_id_fk FOREIGN KEY (publication_id) REFERENCES publications (card_id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT publication_tracker_points_tracker_point_id_fk FOREIGN KEY (tracker_point_id) REFERENCES tracker_points (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Связь публикации с трекером";
+
 SELECT * FROM tracker_points;
 
 -- Настраиваем систему логирования.
