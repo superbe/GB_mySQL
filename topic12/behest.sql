@@ -2810,17 +2810,25 @@ INSERT INTO documents (publication_id, owner, author, title, annotation) VALUES
     (53,73,96,'Dicta expedita alias accusamus illo unde.','Sapiente odio corrupti ratione id temporibus expedita. Voluptate quae omnis qui aut quidem magnam totam. Laboriosam assumenda ex est est.'),
     (54,18,8,'Sit deserunt ad quia est.','Eveniet aliquam eos non dolore sed in qui nihil. Sit quia nihil nisi minus ut impedit omnis sint. Dolores temporibus aperiam ullam optio distinctio. Quisquam accusamus dolore ratione ex nihil esse.');
 
-INSERT INTO `authors` VALUES (34,31),(8,53),(4,22),(52,99),(2,66),(42,59),(5,29),(9,80),(12,36),(3,30),(34,76),(14,51),(4,91),(45,58),(29,28),(2,58),(40,59),(18,39),(29,62),(21,5),(5,72),(49,51),(21,16),(1,25),(38,36),(51,56),(23,33),(20,73),(16,3),(20,2),(29,8),(48,12),(18,39),(7,5),(12,4),(42,39),(18,17),(43,68),(22,8),(4,65),(28,22),(36,42),(1,5),(27,61),(35,95),(45,22),(40,77),(17,92),(50,56),(1,44),(9,33),(26,52),(42,33),(25,9),(11,43),(34,39),(47,25),(3,86),(19,36),(27,60),(18,74),(7,59),(24,22),(36,73),(24,42),(8,22),(7,59),(18,52),(40,82),(22,39),(2,91),(39,84),(20,87),(14,58),(51,54);
+INSERT INTO authors (document_id, personalitie_id) VALUES
+	(34,31),(8,53),(4,22),(52,99),(2,66),(42,59),(5,29),(9,80),(12,36),(3,30),
+    (34,76),(14,51),(4,91),(45,58),(29,28),(2,58),(40,59),(18,39),(29,62),(21,5),
+    (5,72),(49,51),(21,16),(1,25),(38,36),(51,56),(23,33),(20,73),(16,3),(20,2),
+    (29,8),(48,12),(7,5),(12,4),(42,39),(18,17),(43,68),(22,8),(4,65),
+    (28,22),(36,42),(1,5),(27,61),(35,95),(45,22),(40,77),(17,92),(50,56),(1,44),
+    (9,33),(26,52),(42,33),(25,9),(11,43),(34,39),(47,25),(3,86),(19,36),(27,60),
+    (18,74),(7,59),(24,22),(36,73),(24,42),(8,22),(18,52),(40,82),(22,39),
+    (2,91),(39,84),(20,87),(14,58),(51,54);
 
-DROP TABLE IF EXISTS authors;
-CREATE TABLE authors (
+DROP TABLE IF EXISTS pages;
+CREATE TABLE pages (
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор страницы",
     document_id INT UNSIGNED NOT NULL COMMENT "Идентификатор документа",
-    personalitie_id INT UNSIGNED NOT NULL COMMENT "Идентификатор персоны",
-    PRIMARY KEY (document_id, personalitie_id),
-    CONSTRAINT authors_document_id_fk FOREIGN KEY (document_id) REFERENCES documents (publication_id) ON DELETE NO ACTION ON UPDATE CASCADE,
-    CONSTRAINT authors_personalitie_id_fk FOREIGN KEY (personalitie_id) REFERENCES personalities (id) ON DELETE NO ACTION ON UPDATE CASCADE
-) COMMENT = "Авторы";
-
+    image_id INT UNSIGNED NOT NULL COMMENT "Скан страницы",
+    content TEXT NOT NULL COMMENT "Содержание (текст) страницы",
+    CONSTRAINT pages_document_id_fk FOREIGN KEY (document_id) REFERENCES documents (publication_id) ON DELETE NO ACTION ON UPDATE CASCADE,
+    CONSTRAINT pages_image_id_fk FOREIGN KEY (image_id) REFERENCES media (id) ON DELETE NO ACTION ON UPDATE CASCADE
+) COMMENT = "Страница документа";
 
 SELECT * FROM authors;
 
