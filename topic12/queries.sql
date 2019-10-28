@@ -203,3 +203,5 @@ FROM cards AS c
 		ON doc.publication_id = p.card_id
 WHERE
 	c.id = @card_id;
+
+CREATE INDEX cards_organization_indx ON cards(organization_id);
