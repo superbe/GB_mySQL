@@ -1,5 +1,34 @@
 USE behest;
 
+-- Проверяем заполненность таблиц.
+SELECT * FROM roles;
+SELECT * FROM users;
+SELECT * FROM user_roles;
+SELECT * FROM media_types;
+SELECT * FROM files;
+SELECT * FROM media;
+SELECT * FROM city;
+SELECT * FROM profiles;
+SELECT * FROM classifier;
+SELECT * FROM business;
+SELECT * FROM organization;
+SELECT * FROM cards;
+SELECT * FROM keywords;
+SELECT * FROM card_keywords;
+SELECT * FROM classifier_cards;
+SELECT * FROM card_ciphers;
+SELECT * FROM publication_type;
+SELECT * FROM personalities;
+SELECT * FROM publications;
+SELECT * FROM tracker_points;
+SELECT * FROM behests;
+SELECT * FROM other_publications;
+SELECT * FROM documents;
+SELECT * FROM authors;
+SELECT * FROM pages;
+SELECT * FROM reference_pages;
+
+
 SET @login = 'nswift';
 
 DROP VIEW IF EXISTS get_profile;
