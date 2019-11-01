@@ -91,5 +91,3 @@ SELECT id, ID_USER, counter(id) AS cnt FROM calls ORDER BY cnt DESC LIMIT 1;
 SELECT AVG(empty_time(id - 1, id)) AS empty_time FROM calls;
 -- Оба запроса вместе.
 SELECT (SELECT counter(id) AS cnt FROM calls ORDER BY cnt DESC LIMIT 1) AS max, (SELECT AVG(empty_time(id - 1, id)) AS empty_time FROM calls) AS no_job;
--- Оба запроса вместе (через CONCAT).
-SELECT CONCAT('Максимальное количество одновременно занятых сотрудников: ', (SELECT counter(id) AS cnt FROM calls ORDER BY cnt DESC LIMIT 1), '. Среднее время ожидания звонка: ', (SELECT AVG(empty_time(id - 1, id)) AS empty_time FROM calls)) AS cntc;
