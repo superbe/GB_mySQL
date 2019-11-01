@@ -61,6 +61,35 @@ BEGIN
 	) AS res);
     RETURN @result;
 END//
+
+CREATE FUNCTION empty_time (id_1 int, id_2 int)
+RETURNS INT DETERMINISTIC
+BEGIN
+	-- id_2 больше id_1 всегда.
+	IF id_1 < 1
+    THEN
+		SET @result = 0;
+    ELSE
+		SET @result = (SELECT
+			(unix_timestamp(tg.DT_CALL_START) - unix_timestamp(src.DT_CALL_END))/60 AS Del
+		FROM calls tg
+			JOIN calls src
+				ON src.id = id_1 AND tg.id = id_2
+		LIMIT 1);
+    END IF;
+    IF @result < 0
+    THEN
+		SET @result = 0;
+	END IF;
+    RETURN @result;
+END//
 DELIMITER ;
 
-SELECT id, ID_USER, counter(id) AS cnt FROM calls ORDER BY cnt LIMIT 1;
+-- Максимальное количество одновременно занятых сотрудников.
+SELECT id, ID_USER, counter(id) AS cnt FROM calls ORDER BY cnt DESC LIMIT 1;
+-- Среднее время ожидания звонка.
+SELECT AVG(empty_time(id - 1, id)) AS empty_time FROM calls;
+-- Оба запроса вместе.
+SELECT (SELECT counter(id) AS cnt FROM calls ORDER BY cnt DESC LIMIT 1) AS max, (SELECT AVG(empty_time(id - 1, id)) AS empty_time FROM calls) AS no_job;
+-- Оба запроса вместе (через CONCAT).
+SELECT CONCAT('Максимальное количество одновременно занятых сотрудников: ', (SELECT counter(id) AS cnt FROM calls ORDER BY cnt DESC LIMIT 1), '. Среднее время ожидания звонка: ', (SELECT AVG(empty_time(id - 1, id)) AS empty_time FROM calls)) AS cntc;
